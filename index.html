@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ブックマークマネージャ v2</title>
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/micromodal/dist/micromodal.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <!-- Favorites Bar -->
+        <div class="favorites-bar" id="favoritesBar">
+            <div class="favorites-list" id="favoritesList">
+                <!-- Favorite bookmarks will be rendered here -->
+            </div>
+        </div>
+        
+        <!-- Backup Controls -->
+        <div class="backup-controls">
+            <button class="btn btn-export" id="exportBtn">
+                <i class="fas fa-download"></i> エクスポート
+            </button>
+            <button class="btn btn-import" id="importBtn">
+                <i class="fas fa-upload"></i> インポート
+            </button>
+            <input type="file" id="importFile" accept=".json" style="display: none;">
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="columns-container" id="columnsContainer">
+            <!-- Columns will be rendered here -->
+        </div>
+        
+        <!-- Add Column Button -->
+        <button class="add-column-btn" id="addColumnBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+    </main>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <ul class="context-menu-list">
+            <!-- Context menu items will be dynamically populated -->
+        </ul>
+    </div>
+
+    <!-- Item Edit Modal -->
+    <div class="modal micromodal-slide" id="itemModal" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="itemModal-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="itemModal-title">
+                        アイテム編集
+                    </h2>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close>
+                        <i class="fas fa-times"></i>
+                    </button>
+                </header>
+                
+                <main class="modal__content" id="itemModal-content">
+                    <form id="itemForm">
+                        <div class="form-group">
+                            <label for="itemType">タイプ:</label>
+                            <select id="itemType" name="type" required>
+                                <option value="bookmark">ブックマーク</option>
+                                <option value="folder">フォルダ</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="itemTitle">タイトル:</label>
+                            <input type="text" id="itemTitle" name="title" required>
+                        </div>
+                        
+                        <div class="form-group bookmark-only" id="urlGroup">
+                            <label for="itemUrl">URL:</label>
+                            <input type="url" id="itemUrl" name="url">
+                        </div>
+                        
+                        <div class="form-group bookmark-only" id="iconGroup">
+                            <label for="itemIcon">アイコン (Font Awesome):</label>
+                            <input type="text" id="itemIcon" name="icon" placeholder="例: fas fa-star">
+                        </div>
+                        
+                        <div class="form-group bookmark-only" id="favoriteGroup">
+                            <label>
+                                <input type="checkbox" id="itemFavorite" name="isFavorite">
+                                お気に入りに追加
+                            </label>
+                        </div>
+                        
+                        <div class="form-group folder-only" id="colorGroup">
+                            <label for="itemColor">背景色:</label>
+                            <input type="color" id="itemColor" name="color" value="#ffffff">
+                            <div id="colorPicker"></div>
+                        </div>
+                    </form>
+                </main>
+                
+                <footer class="modal__footer">
+                    <button class="btn btn-primary" id="saveItemBtn">保存</button>
+                    <button class="btn btn-secondary" data-micromodal-close>キャンセル</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+    <script src="https://unpkg.com/vanilla-picker@2/dist/vanilla-picker.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
