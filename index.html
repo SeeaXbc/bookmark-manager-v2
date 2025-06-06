@@ -28,7 +28,11 @@
             <button class="btn btn-import" id="importBtn">
                 <i class="fas fa-upload"></i> インポート
             </button>
+            <button class="btn btn-import-chrome" id="importChromeBtn">
+                <i class="fab fa-chrome"></i> Chrome
+            </button>
             <input type="file" id="importFile" accept=".json" style="display: none;">
+            <input type="file" id="importChromeFile" accept=".html" style="display: none;">
         </div>
     </header>
 
@@ -104,7 +108,7 @@
                         
                         <div class="form-group folder-only" id="colorGroup">
                             <label for="itemColor">背景色:</label>
-                            <input type="color" id="itemColor" name="color" value="#ffffff">
+                            <input type="color" id="itemColor" name="color" value="#e3f2fd">
                             <div id="colorPicker"></div>
                         </div>
                     </form>

@@ -114,6 +114,14 @@ body {
     background: #117a8b;
 }
 
+.btn-import-chrome {
+    background: #4285f4;
+}
+
+.btn-import-chrome:hover {
+    background: #3367d6;
+}
+
 /* Main Content */
 .main-content {
     height: calc(100vh - 60px);

@@ -102,6 +102,15 @@ class BookmarkManager {
             this.importData(e);
         });
         
+        // Chrome Import
+        document.getElementById('importChromeBtn').addEventListener('click', () => {
+            document.getElementById('importChromeFile').click();
+        });
+        
+        document.getElementById('importChromeFile').addEventListener('change', (e) => {
+            this.importChromeBookmarks(e);
+        });
+        
         // Context Menu
         document.addEventListener('contextmenu', (e) => {
             this.showContextMenu(e);
@@ -280,16 +289,27 @@ class BookmarkManager {
             document.getElementById('itemIcon').value = currentIcon;
             document.getElementById('selectedIconPreview').className = currentIcon;
             document.getElementById('itemFavorite').checked = this.currentEditingItem.isFavorite || false;
-            document.getElementById('itemColor').value = this.currentEditingItem.color || '#ffffff';
+            const folderColor = this.currentEditingItem.color || '#e3f2fd';
+            document.getElementById('itemColor').value = folderColor;
         } else {
             document.getElementById('itemType').value = type;
             const defaultIcon = 'fas fa-bookmark';
             document.getElementById('itemIcon').value = defaultIcon;
             document.getElementById('selectedIconPreview').className = defaultIcon;
+            // Set default color for new folders
+            if (type === 'folder') {
+                document.getElementById('itemColor').value = '#e3f2fd';
+            } else {
+                document.getElementById('itemColor').value = '#e3f2fd';
+            }
         }
         
         this.toggleFormFields();
-        this.initColorPicker();
+        
+        // Initialize color picker only for folders
+        if (document.getElementById('itemType').value === 'folder') {
+            this.initColorPicker();
+        }
         
         MicroModal.show('itemModal');
     }
@@ -306,6 +326,13 @@ class BookmarkManager {
         folderFields.forEach(field => {
             field.style.display = type === 'folder' ? 'block' : 'none';
         });
+        
+        // Initialize color picker when switching to folder type
+        if (type === 'folder') {
+            setTimeout(() => {
+                this.initColorPicker();
+            }, 100);
+        }
     }
     
     initColorPicker() {
@@ -316,11 +343,17 @@ class BookmarkManager {
             this.colorPicker.destroy();
         }
         
+        // Ensure we have a valid color value
+        const currentColor = colorInput.value || '#e3f2fd';
+        colorInput.value = currentColor;
+        
         this.colorPicker = new Picker({
             parent: colorPickerContainer,
-            color: colorInput.value,
+            color: currentColor,
             onChange: (color) => {
-                colorInput.value = color.hex;
+                // Remove alpha channel if present (convert #rrggbbff to #rrggbb)
+                const hexColor = color.hex.length > 7 ? color.hex.substring(0, 7) : color.hex;
+                colorInput.value = hexColor;
             }
         });
     }
@@ -1000,6 +1033,174 @@ class BookmarkManager {
         
         // Reset file input
         event.target.value = '';
+    }
+    
+    // Chrome Bookmarks Import
+    importChromeBookmarks(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const htmlContent = e.target.result;
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlContent, 'text/html');
+                
+                if (confirm('Chromeブックマークをインポートしますか？新しいカラムが作成されます。')) {
+                    this.parseChromeBookmarks(doc);
+                    this.saveData();
+                    this.render();
+                }
+            } catch (error) {
+                alert('Chromeブックマークファイルの読み込みに失敗しました。');
+                console.error('Chrome import error:', error);
+            }
+        };
+        reader.readAsText(file);
+        
+        // Reset file input
+        event.target.value = '';
+    }
+    
+    parseChromeBookmarks(doc) {
+        // Create new column for imported bookmarks
+        const columnId = this.generateUUID();
+        const newColumn = {
+            id: columnId,
+            width: '350px',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            items: []
+        };
+        
+        // Find the root DL element containing all bookmarks
+        const rootDl = doc.querySelector('body > dl');
+        if (rootDl) {
+            // Parse all top-level DT elements (bookmark folders)
+            const topLevelItems = Array.from(rootDl.children).filter(child => child.tagName === 'DT');
+            
+            for (const dtElement of topLevelItems) {
+                const h3 = dtElement.querySelector('h3');
+                if (h3) {
+                    const folderName = h3.textContent.trim();
+                    const nextDl = dtElement.querySelector('dl');
+                    
+                    if (nextDl) {
+                        // Create a folder for this top-level bookmark section
+                        const folderItem = {
+                            id: this.generateUUID(),
+                            type: 'folder',
+                            title: folderName,
+                            color: '#e3f2fd',
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                            children: this.parseBookmarkFolder(nextDl)
+                        };
+                        newColumn.items.push(folderItem);
+                    }
+                }
+            }
+        }
+        
+        // Add the new column to data
+        this.data.columns.push(newColumn);
+        this.data.columnOrder.push(columnId);
+    }
+    
+    parseBookmarkFolder(dlElement) {
+        const items = [];
+        const children = dlElement.children;
+        
+        for (const child of children) {
+            if (child.tagName === 'DT') {
+                const item = this.parseBookmarkItem(child);
+                if (item) {
+                    items.push(item);
+                }
+            }
+        }
+        
+        return items;
+    }
+    
+    parseBookmarkItem(dtElement) {
+        // First check for direct link (bookmark)
+        const directLink = dtElement.querySelector(':scope > a');
+        if (directLink) {
+            // This is a bookmark
+            const href = directLink.getAttribute('href');
+            const title = directLink.textContent.trim();
+            const icon = this.getIconFromUrl(href);
+            
+            return {
+                id: this.generateUUID(),
+                type: 'bookmark',
+                title: title || 'Untitled',
+                url: href,
+                isFavorite: false,
+                icon: icon,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+        }
+        
+        // Then check for folder (H3 + DL)
+        const h3 = dtElement.querySelector(':scope > h3');
+        if (h3) {
+            const title = h3.textContent.trim();
+            const nextDl = dtElement.querySelector(':scope > dl');
+            
+            return {
+                id: this.generateUUID(),
+                type: 'folder',
+                title: title || 'Untitled Folder',
+                color: '#e3f2fd',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                children: nextDl ? this.parseBookmarkFolder(nextDl) : []
+            };
+        }
+        
+        return null;
+    }
+    
+    getIconFromUrl(url) {
+        if (!url) return 'fas fa-bookmark';
+        
+        const domain = url.toLowerCase();
+        
+        // Common site icons
+        if (domain.includes('google.com')) return 'fab fa-google';
+        if (domain.includes('github.com')) return 'fab fa-github';
+        if (domain.includes('youtube.com')) return 'fab fa-youtube';
+        if (domain.includes('twitter.com') || domain.includes('x.com')) return 'fab fa-twitter';
+        if (domain.includes('facebook.com')) return 'fab fa-facebook';
+        if (domain.includes('instagram.com')) return 'fab fa-instagram';
+        if (domain.includes('linkedin.com')) return 'fab fa-linkedin';
+        if (domain.includes('amazon.com') || domain.includes('amazon.co.jp')) return 'fab fa-amazon';
+        if (domain.includes('netflix.com')) return 'fas fa-film';
+        if (domain.includes('spotify.com')) return 'fab fa-spotify';
+        if (domain.includes('stackoverflow.com')) return 'fab fa-stack-overflow';
+        if (domain.includes('reddit.com')) return 'fab fa-reddit';
+        if (domain.includes('wikipedia.org')) return 'fab fa-wikipedia-w';
+        if (domain.includes('microsoft.com')) return 'fab fa-microsoft';
+        if (domain.includes('apple.com')) return 'fab fa-apple';
+        if (domain.includes('discord.com')) return 'fab fa-discord';
+        if (domain.includes('slack.com')) return 'fab fa-slack';
+        if (domain.includes('zoom.us')) return 'fas fa-video';
+        
+        // Default icon based on URL type
+        if (domain.includes('mail') || domain.includes('email')) return 'fas fa-envelope';
+        if (domain.includes('news')) return 'fas fa-newspaper';
+        if (domain.includes('shop') || domain.includes('store')) return 'fas fa-shopping-cart';
+        if (domain.includes('game')) return 'fas fa-gamepad';
+        if (domain.includes('music')) return 'fas fa-music';
+        if (domain.includes('video')) return 'fas fa-video';
+        if (domain.includes('photo')) return 'fas fa-camera';
+        if (domain.includes('doc') || domain.includes('pdf')) return 'fas fa-file-pdf';
+        
+        return 'fas fa-bookmark';
     }
 }
 
