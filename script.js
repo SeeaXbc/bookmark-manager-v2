@@ -36,6 +36,21 @@ class BookmarkManager {
         });
     }
     
+    // Convert hex color to rgba with opacity
+    hexToRgba(hex, opacity) {
+        if (!hex) return 'transparent';
+        
+        // Remove # if present
+        hex = hex.replace('#', '');
+        
+        // Parse RGB values
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+    
     // Data Management
     loadData() {
         const savedData = localStorage.getItem('bookmarkManager');
@@ -561,9 +576,11 @@ class BookmarkManager {
             .filter(col => col);
         
         columnsContainer.innerHTML = orderedColumns.map(column => `
-            <div class="column" data-column-id="${column.id}">
+            <div class="column" data-column-id="${column.id}" style="width: ${column.width || '300px'}">
                 <div class="column-header">
-                    <div class="column-title">カラム</div>
+                    <div class="column-drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
                     <div class="column-actions">
                         <button class="column-action-btn" data-action="delete-column" data-column-id="${column.id}">
                             <i class="fas fa-trash"></i>
@@ -573,6 +590,7 @@ class BookmarkManager {
                 <div class="column-content" data-column-id="${column.id}">
                     ${this.renderItems(column.items)}
                 </div>
+                <div class="column-resize-handle" data-column-id="${column.id}"></div>
             </div>
         `).join('');
         
@@ -608,17 +626,80 @@ class BookmarkManager {
                 }
             });
         });
+        
+        // Add event listeners for column resize
+        document.querySelectorAll('.column-resize-handle').forEach(handle => {
+            let isResizing = false;
+            let startX = 0;
+            let startWidth = 0;
+            let column = null;
+            
+            handle.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                startX = e.clientX;
+                column = handle.closest('.column');
+                startWidth = parseInt(window.getComputedStyle(column).width, 10);
+                
+                document.addEventListener('mousemove', resize);
+                document.addEventListener('mouseup', stopResize);
+                e.preventDefault();
+            });
+            
+            const resize = (e) => {
+                if (!isResizing) return;
+                
+                const width = startWidth + (e.clientX - startX);
+                const minWidth = 200;
+                const maxWidth = 600;
+                
+                if (width >= minWidth && width <= maxWidth) {
+                    column.style.width = width + 'px';
+                    
+                    // Update column data
+                    const columnId = column.dataset.columnId;
+                    const columnData = this.data.columns.find(col => col.id === columnId);
+                    if (columnData) {
+                        columnData.width = width + 'px';
+                    }
+                }
+            };
+            
+            const stopResize = () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.removeEventListener('mousemove', resize);
+                    document.removeEventListener('mouseup', stopResize);
+                    
+                    // Save data after resize
+                    this.saveData();
+                }
+            };
+        });
     }
     
-    renderItems(items, level = 0) {
+    renderItems(items, level = 0, parentFolderColor = null) {
         return items.map(item => {
             const indent = '  '.repeat(level);
             
+            // Determine background color for this item
+            let backgroundColor = 'transparent';
+            if (item.type === 'folder') {
+                // Folders use their own color
+                backgroundColor = item.color || 'transparent';
+            } else {
+                // Child items use parent folder color with 30% opacity
+                if (parentFolderColor) {
+                    backgroundColor = this.hexToRgba(parentFolderColor, 0.3);
+                }
+            }
+            
             if (item.type === 'folder') {
                 const isExpanded = !item.collapsed;
+                const currentFolderColor = item.color || parentFolderColor;
+                
                 return `
                     <div class="tree-item folder-item" data-item-id="${item.id}">
-                        <div class="item-content" data-item-id="${item.id}" style="background-color: ${item.color || 'transparent'}">
+                        <div class="item-content" data-item-id="${item.id}" style="background-color: ${backgroundColor}">
                             ${indent}<button class="folder-toggle" data-item-id="${item.id}">
                                 <i class="fas fa-caret-${isExpanded ? 'down' : 'right'}"></i>
                             </button>
@@ -626,14 +707,14 @@ class BookmarkManager {
                             <span class="item-title">${item.title}</span>
                         </div>
                         <div class="folder-children ${isExpanded ? '' : 'collapsed'}">
-                            ${this.renderItems(item.children || [], level + 1)}
+                            ${this.renderItems(item.children || [], level + 1, currentFolderColor)}
                         </div>
                     </div>
                 `;
             } else {
                 return `
                     <div class="tree-item bookmark-item" data-item-id="${item.id}">
-                        <div class="item-content bookmark-content" data-item-id="${item.id}">
+                        <div class="item-content bookmark-content" data-item-id="${item.id}" style="background-color: ${backgroundColor}">
                             ${indent}<span class="item-indent"></span>
                             <i class="item-icon ${item.icon || 'fas fa-bookmark'}"></i>
                             <span class="item-title">${item.title}</span>
@@ -700,6 +781,20 @@ class BookmarkManager {
             new Sortable(columnContent, {
                 group: 'items',
                 animation: 150,
+                handle: '.item-content',
+                filter: '.folder-children',
+                onEnd: (evt) => {
+                    this.handleItemMove(evt);
+                }
+            });
+        });
+        
+        // Setup sortable for folder children
+        document.querySelectorAll('.folder-children').forEach(folderChildren => {
+            new Sortable(folderChildren, {
+                group: 'items',
+                animation: 150,
+                handle: '.item-content',
                 onEnd: (evt) => {
                     this.handleItemMove(evt);
                 }
@@ -709,18 +804,39 @@ class BookmarkManager {
     
     handleItemMove(evt) {
         const itemId = evt.item.dataset.itemId;
-        const newColumnId = evt.to.dataset.columnId;
-        const oldColumnId = evt.from.dataset.columnId;
         const newIndex = evt.newIndex;
         
-        // Remove item from old location
+        // Get the moved item
         const item = this.findItemById(itemId);
+        if (!item) return;
+        
+        // Remove item from old location
         this.removeItemRecursive(itemId);
         
-        // Add item to new location
-        const newColumn = this.data.columns.find(col => col.id === newColumnId);
-        if (newColumn && item) {
-            newColumn.items.splice(newIndex, 0, item);
+        // Determine new location
+        const toElement = evt.to;
+        let targetArray = null;
+        
+        if (toElement.classList.contains('column-content')) {
+            // Moving to column root
+            const columnId = toElement.dataset.columnId;
+            const column = this.data.columns.find(col => col.id === columnId);
+            if (column) {
+                targetArray = column.items;
+            }
+        } else if (toElement.classList.contains('folder-children')) {
+            // Moving to folder
+            const folderElement = toElement.closest('.folder-item');
+            const folderId = folderElement?.dataset.itemId;
+            const folder = this.findItemById(folderId);
+            if (folder && folder.children) {
+                targetArray = folder.children;
+            }
+        }
+        
+        // Insert item at new location
+        if (targetArray) {
+            targetArray.splice(newIndex, 0, item);
         }
         
         this.saveData();

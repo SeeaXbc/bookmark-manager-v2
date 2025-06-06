@@ -136,21 +136,60 @@ body {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     width: 300px;
-    min-width: 300px;
+    min-width: 200px;
+    max-width: 600px;
     height: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
+    resize: horizontal;
+    overflow: hidden;
 }
 
 .column-header {
-    padding: 12px;
+    padding: 6px 12px;
     border-bottom: 1px solid #e0e0e0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #f8f9fa;
     border-radius: 8px 8px 0 0;
+    min-height: 32px;
+}
+
+.column-drag-handle {
+    display: flex;
+    align-items: center;
+    cursor: grab;
+    color: #6c757d;
+    padding: 4px;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.column-drag-handle:hover {
+    color: #495057;
+    background: #e9ecef;
+}
+
+.column-drag-handle:active {
+    cursor: grabbing;
+}
+
+.column-resize-handle {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    background: transparent;
+    z-index: 10;
+}
+
+.column-resize-handle:hover {
+    background: #007bff;
+    opacity: 0.3;
 }
 
 .column-actions {
@@ -190,18 +229,30 @@ body {
     align-items: center;
     padding: 6px 8px;
     border-radius: 4px;
-    cursor: pointer;
+    cursor: grab;
     transition: background-color 0.2s;
     position: relative;
     min-height: 28px;
 }
 
+.item-content:active {
+    cursor: grabbing;
+}
+
+.bookmark-content {
+    cursor: pointer;
+}
+
+.bookmark-content:hover {
+    cursor: pointer;
+}
+
 .item-content:hover {
-    background: #f8f9fa;
+    background: #f8f9fa !important;
 }
 
 .item-content.selected {
-    background: #e3f2fd;
+    background: #e3f2fd !important;
 }
 
 .item-indent {
@@ -544,15 +595,15 @@ body {
 /* Drag and Drop Styles */
 .sortable-ghost {
     opacity: 0.4;
-    background: #e3f2fd;
+    background: #e3f2fd !important;
 }
 
 .sortable-chosen {
-    background: #f3e5f5;
+    background: #f3e5f5 !important;
 }
 
 .sortable-drag {
-    background: white;
+    background: white !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     transform: rotate(5deg);
 }
@@ -560,6 +611,15 @@ body {
 /* Custom Color Picker */
 #colorPicker {
     margin-top: 8px;
+}
+
+.form-group input[type="color"] {
+    width: 80px;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 /* Scrollbar Styles */
@@ -611,6 +671,6 @@ body {
     
     .column {
         width: 250px;
-        min-width: 250px;
+        min-width: 200px;
     }
 }
