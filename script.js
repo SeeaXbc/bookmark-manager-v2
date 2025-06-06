@@ -13,6 +13,8 @@ class BookmarkManager {
         this.currentEditingColumn = null;
         this.contextMenuTarget = null;
         this.colorPicker = null;
+        this.selectedIcon = 'fas fa-bookmark';
+        this.iconData = this.getIconData();
         
         this.init();
     }
@@ -101,6 +103,11 @@ class BookmarkManager {
         
         document.getElementById('saveItemBtn').addEventListener('click', () => {
             this.saveItem();
+        });
+        
+        // Icon Picker
+        document.getElementById('iconPickerBtn').addEventListener('click', () => {
+            this.openIconPicker();
         });
         
         // Prevent context menu on modal
@@ -254,11 +261,16 @@ class BookmarkManager {
             document.getElementById('itemType').value = this.currentEditingItem.type;
             document.getElementById('itemTitle').value = this.currentEditingItem.title || '';
             document.getElementById('itemUrl').value = this.currentEditingItem.url || '';
-            document.getElementById('itemIcon').value = this.currentEditingItem.icon || '';
+            const currentIcon = this.currentEditingItem.icon || 'fas fa-bookmark';
+            document.getElementById('itemIcon').value = currentIcon;
+            document.getElementById('selectedIconPreview').className = currentIcon;
             document.getElementById('itemFavorite').checked = this.currentEditingItem.isFavorite || false;
             document.getElementById('itemColor').value = this.currentEditingItem.color || '#ffffff';
         } else {
             document.getElementById('itemType').value = type;
+            const defaultIcon = 'fas fa-bookmark';
+            document.getElementById('itemIcon').value = defaultIcon;
+            document.getElementById('selectedIconPreview').className = defaultIcon;
         }
         
         this.toggleFormFields();
@@ -553,7 +565,7 @@ class BookmarkManager {
                 <div class="column-header">
                     <div class="column-title">カラム</div>
                     <div class="column-actions">
-                        <button class="column-action-btn" onclick="bookmarkManager.deleteColumn('${column.id}')">
+                        <button class="column-action-btn" data-action="delete-column" data-column-id="${column.id}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -563,6 +575,39 @@ class BookmarkManager {
                 </div>
             </div>
         `).join('');
+        
+        // Add event listeners for column actions
+        document.querySelectorAll('.column-action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const action = btn.dataset.action;
+                const columnId = btn.dataset.columnId;
+                
+                if (action === 'delete-column') {
+                    this.deleteColumn(columnId);
+                }
+            });
+        });
+        
+        // Add event listeners for folder toggles
+        document.querySelectorAll('.folder-toggle').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const itemId = btn.dataset.itemId;
+                this.toggleFolder(itemId);
+            });
+        });
+        
+        // Add event listeners for bookmark clicks
+        document.querySelectorAll('.bookmark-content').forEach(el => {
+            el.addEventListener('click', (e) => {
+                // Don't trigger on right-click (context menu)
+                if (e.button === 0) {
+                    const itemId = el.dataset.itemId;
+                    this.openBookmark(itemId);
+                }
+            });
+        });
     }
     
     renderItems(items, level = 0) {
@@ -574,7 +619,7 @@ class BookmarkManager {
                 return `
                     <div class="tree-item folder-item" data-item-id="${item.id}">
                         <div class="item-content" data-item-id="${item.id}" style="background-color: ${item.color || 'transparent'}">
-                            ${indent}<button class="folder-toggle" onclick="bookmarkManager.toggleFolder('${item.id}')">
+                            ${indent}<button class="folder-toggle" data-item-id="${item.id}">
                                 <i class="fas fa-caret-${isExpanded ? 'down' : 'right'}"></i>
                             </button>
                             <i class="item-icon fas fa-folder"></i>
@@ -588,7 +633,7 @@ class BookmarkManager {
             } else {
                 return `
                     <div class="tree-item bookmark-item" data-item-id="${item.id}">
-                        <div class="item-content" data-item-id="${item.id}" onclick="bookmarkManager.openBookmark('${item.id}')">
+                        <div class="item-content bookmark-content" data-item-id="${item.id}">
                             ${indent}<span class="item-indent"></span>
                             <i class="item-icon ${item.icon || 'fas fa-bookmark'}"></i>
                             <span class="item-title">${item.title}</span>
@@ -681,6 +726,130 @@ class BookmarkManager {
         this.saveData();
         this.renderColumns();
         this.setupColumnSortable();
+    }
+    
+    // Icon Picker Data
+    getIconData() {
+        return {
+            general: [
+                'fas fa-bookmark', 'fas fa-star', 'fas fa-heart', 'fas fa-home', 'fas fa-user',
+                'fas fa-cog', 'fas fa-search', 'fas fa-plus', 'fas fa-minus', 'fas fa-edit',
+                'fas fa-trash', 'fas fa-save', 'fas fa-print', 'fas fa-download', 'fas fa-upload',
+                'fas fa-bell', 'fas fa-envelope', 'fas fa-phone', 'fas fa-calendar', 'fas fa-clock',
+                'fas fa-map-marker-alt', 'fas fa-tag', 'fas fa-tags', 'fas fa-flag', 'fas fa-info',
+                'fas fa-question', 'fas fa-exclamation', 'fas fa-check', 'fas fa-times', 'fas fa-eye'
+            ],
+            web: [
+                'fab fa-google', 'fab fa-amazon', 'fab fa-apple', 'fab fa-microsoft', 'fab fa-chrome',
+                'fab fa-firefox', 'fab fa-safari', 'fab fa-edge', 'fas fa-globe', 'fas fa-wifi',
+                'fas fa-rss', 'fas fa-link', 'fas fa-external-link-alt', 'fas fa-share', 'fas fa-code',
+                'fas fa-terminal', 'fas fa-database', 'fas fa-server', 'fas fa-cloud', 'fas fa-shield-alt'
+            ],
+            social: [
+                'fab fa-twitter', 'fab fa-facebook', 'fab fa-instagram', 'fab fa-linkedin', 'fab fa-youtube',
+                'fab fa-tiktok', 'fab fa-discord', 'fab fa-telegram', 'fab fa-whatsapp', 'fab fa-line',
+                'fab fa-skype', 'fab fa-slack', 'fab fa-zoom', 'fab fa-reddit', 'fab fa-pinterest',
+                'fab fa-snapchat', 'fab fa-tumblr', 'fab fa-twitch', 'fab fa-spotify', 'fab fa-soundcloud'
+            ],
+            file: [
+                'fas fa-file', 'fas fa-file-alt', 'fas fa-file-pdf', 'fas fa-file-word', 'fas fa-file-excel',
+                'fas fa-file-powerpoint', 'fas fa-file-image', 'fas fa-file-video', 'fas fa-file-audio',
+                'fas fa-file-archive', 'fas fa-file-code', 'fas fa-folder', 'fas fa-folder-open',
+                'fas fa-copy', 'fas fa-cut', 'fas fa-paste', 'fas fa-clipboard', 'fas fa-paperclip',
+                'fas fa-image', 'fas fa-images'
+            ],
+            arrow: [
+                'fas fa-arrow-up', 'fas fa-arrow-down', 'fas fa-arrow-left', 'fas fa-arrow-right',
+                'fas fa-arrow-circle-up', 'fas fa-arrow-circle-down', 'fas fa-arrow-circle-left', 'fas fa-arrow-circle-right',
+                'fas fa-chevron-up', 'fas fa-chevron-down', 'fas fa-chevron-left', 'fas fa-chevron-right',
+                'fas fa-angle-up', 'fas fa-angle-down', 'fas fa-angle-left', 'fas fa-angle-right',
+                'fas fa-caret-up', 'fas fa-caret-down', 'fas fa-caret-left', 'fas fa-caret-right'
+            ]
+        };
+    }
+    
+    // Icon Picker Methods
+    openIconPicker() {
+        this.selectedIcon = document.getElementById('itemIcon').value || 'fas fa-bookmark';
+        this.renderIconPicker();
+        MicroModal.show('iconPickerModal');
+    }
+    
+    renderIconPicker() {
+        const iconGrid = document.getElementById('iconGrid');
+        const searchInput = document.getElementById('iconSearch');
+        const categoryBtns = document.querySelectorAll('.icon-category-btn');
+        
+        // Setup search
+        searchInput.addEventListener('input', () => {
+            this.filterIcons();
+        });
+        
+        // Setup category buttons
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.filterIcons();
+            });
+        });
+        
+        this.filterIcons();
+    }
+    
+    filterIcons() {
+        const searchTerm = document.getElementById('iconSearch').value.toLowerCase();
+        const activeCategory = document.querySelector('.icon-category-btn.active').dataset.category;
+        const iconGrid = document.getElementById('iconGrid');
+        
+        let iconsToShow = [];
+        
+        if (activeCategory === 'all') {
+            iconsToShow = Object.values(this.iconData).flat();
+        } else {
+            iconsToShow = this.iconData[activeCategory] || [];
+        }
+        
+        // Filter by search term
+        if (searchTerm) {
+            iconsToShow = iconsToShow.filter(icon => 
+                icon.toLowerCase().includes(searchTerm) ||
+                icon.replace('fas fa-', '').replace('fab fa-', '').replace('-', ' ').includes(searchTerm)
+            );
+        }
+        
+        // Render icons
+        iconGrid.innerHTML = iconsToShow.map(icon => `
+            <div class="icon-item ${icon === this.selectedIcon ? 'selected' : ''}" 
+                 data-icon="${icon}" 
+                 title="${icon}">
+                <i class="${icon}"></i>
+            </div>
+        `).join('');
+        
+        // Add click handlers
+        iconGrid.addEventListener('click', (e) => {
+            const iconItem = e.target.closest('.icon-item');
+            if (iconItem) {
+                // Remove previous selection
+                iconGrid.querySelectorAll('.icon-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Add selection to clicked item
+                iconItem.classList.add('selected');
+                
+                // Update selected icon
+                this.selectedIcon = iconItem.dataset.icon;
+                
+                // Update input and preview
+                document.getElementById('itemIcon').value = this.selectedIcon;
+                document.getElementById('selectedIconPreview').className = this.selectedIcon;
+                
+                // Close modal
+                MicroModal.close('iconPickerModal');
+            }
+        });
     }
     
     // Export/Import

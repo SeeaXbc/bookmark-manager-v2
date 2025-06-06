@@ -433,6 +433,114 @@ body {
     display: none;
 }
 
+/* Icon Picker Styles */
+.icon-input-container {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-input-container input {
+    flex: 1;
+}
+
+.icon-picker-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.icon-picker-btn:hover {
+    background: #e9ecef;
+}
+
+.icon-picker-modal .modal__container {
+    max-width: 600px;
+    max-height: 80vh;
+}
+
+.icon-search {
+    margin-bottom: 16px;
+}
+
+.icon-search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.icon-categories {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.icon-category-btn {
+    padding: 6px 12px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.icon-category-btn:hover {
+    background: #e9ecef;
+}
+
+.icon-category-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.icon-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 18px;
+    color: #495057;
+}
+
+.icon-item:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.icon-item.selected {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
 /* Drag and Drop Styles */
 .sortable-ghost {
     opacity: 0.4;
