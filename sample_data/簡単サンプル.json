@@ -1,0 +1,121 @@
+{
+  "appSettings": {},
+  "columns": [
+    {
+      "id": "column-basic",
+      "width": "300px",
+      "createdAt": "2025-01-07T00:00:00.000Z",
+      "updatedAt": "2025-01-07T00:00:00.000Z",
+      "items": [
+        {
+          "id": "tutorial-folder",
+          "type": "folder",
+          "title": "🎯 使い方ガイド",
+          "color": "#e3f2fd",
+          "collapsed": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "step1-bookmark",
+              "type": "bookmark",
+              "title": "1. 右クリックでメニューを表示",
+              "url": "javascript:alert('空白部分やアイテムを右クリックしてみてください！')",
+              "icon": "fas fa-mouse-pointer",
+              "isFavorite": true,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "step2-bookmark",
+              "type": "bookmark",
+              "title": "2. ドラッグして移動させる",
+              "url": "javascript:alert('このアイテムをドラッグして移動してみてください！')",
+              "icon": "fas fa-arrows-alt",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "step3-bookmark", 
+              "type": "bookmark",
+              "title": "3. 右下の＋でカラム追加",
+              "url": "javascript:alert('画面右下の「+」ボタンで新しいカラムを追加できます！')",
+              "icon": "fas fa-plus-circle",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "google-bookmark",
+          "type": "bookmark",
+          "title": "Google",
+          "url": "https://www.google.com",
+          "icon": "fab fa-google",
+          "isFavorite": true,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z"
+        },
+        {
+          "id": "youtube-bookmark",
+          "type": "bookmark",
+          "title": "YouTube",
+          "url": "https://www.youtube.com",
+          "icon": "fab fa-youtube",
+          "isFavorite": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "column-work",
+      "width": "300px",
+      "createdAt": "2025-01-07T00:00:00.000Z",
+      "updatedAt": "2025-01-07T00:00:00.000Z",
+      "items": [
+        {
+          "id": "work-folder",
+          "type": "folder",
+          "title": "💼 仕事",
+          "color": "#f3e5f5",
+          "collapsed": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "gmail-bookmark",
+              "type": "bookmark",
+              "title": "Gmail",
+              "url": "https://mail.google.com",
+              "icon": "fas fa-envelope",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "calendar-bookmark",
+              "type": "bookmark",
+              "title": "Google Calendar",
+              "url": "https://calendar.google.com",
+              "icon": "fas fa-calendar",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "columnOrder": [
+    "column-basic",
+    "column-work"
+  ],
+  "favoritesOrder": [
+    "step1-bookmark",
+    "google-bookmark"
+  ]
+}

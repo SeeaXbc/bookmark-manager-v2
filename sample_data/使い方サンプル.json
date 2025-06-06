@@ -1,0 +1,315 @@
+{
+  "appSettings": {},
+  "columns": [
+    {
+      "id": "column-welcome",
+      "width": "350px",
+      "createdAt": "2025-01-07T00:00:00.000Z",
+      "updatedAt": "2025-01-07T00:00:00.000Z",
+      "items": [
+        {
+          "id": "welcome-folder",
+          "type": "folder",
+          "title": "🎯 まずはここから - 基本操作",
+          "color": "#e3f2fd",
+          "collapsed": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "help-bookmark",
+              "type": "bookmark",
+              "title": "右上のヘルプボタンをクリック",
+              "url": "javascript:alert('右上の「？ヘルプ」ボタンをクリックして詳しい使い方を確認してください！')",
+              "icon": "fas fa-question-circle",
+              "isFavorite": true,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "right-click-bookmark",
+              "type": "bookmark",
+              "title": "右クリックでメニュー表示",
+              "url": "javascript:alert('アイテムや空白部分を右クリックすると操作メニューが表示されます')",
+              "icon": "fas fa-mouse-pointer",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "drag-drop-bookmark",
+              "type": "bookmark",
+              "title": "ドラッグ&ドロップで移動",
+              "url": "javascript:alert('このアイテムをドラッグして他のフォルダやカラムに移動してみてください')",
+              "icon": "fas fa-arrows-alt",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "example-bookmark-1",
+          "type": "bookmark",
+          "title": "GitHub - 開発者向けプラットフォーム",
+          "url": "https://github.com",
+          "icon": "fab fa-github",
+          "isFavorite": true,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z"
+        },
+        {
+          "id": "example-bookmark-2",
+          "type": "bookmark",
+          "title": "Google - 検索エンジン",
+          "url": "https://www.google.com",
+          "icon": "fab fa-google",
+          "isFavorite": true,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "column-productivity",
+      "width": "320px",
+      "createdAt": "2025-01-07T00:00:00.000Z",
+      "updatedAt": "2025-01-07T00:00:00.000Z",
+      "items": [
+        {
+          "id": "productivity-folder",
+          "type": "folder",
+          "title": "💼 仕事・生産性",
+          "color": "#f3e5f5",
+          "collapsed": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "notion-bookmark",
+              "type": "bookmark",
+              "title": "Notion - オールインワンワークスペース",
+              "url": "https://www.notion.so",
+              "icon": "fas fa-sticky-note",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "slack-bookmark",
+              "type": "bookmark",
+              "title": "Slack - チームコミュニケーション",
+              "url": "https://slack.com",
+              "icon": "fab fa-slack",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "zoom-bookmark",
+              "type": "bookmark",
+              "title": "Zoom - オンライン会議",
+              "url": "https://zoom.us",
+              "icon": "fas fa-video",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "development-folder",
+          "type": "folder",
+          "title": "⚡ 開発ツール",
+          "color": "#e8f5e8",
+          "collapsed": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "vscode-bookmark",
+              "type": "bookmark",
+              "title": "Visual Studio Code",
+              "url": "https://code.visualstudio.com",
+              "icon": "fas fa-code",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "stackoverflow-bookmark",
+              "type": "bookmark",
+              "title": "Stack Overflow",
+              "url": "https://stackoverflow.com",
+              "icon": "fab fa-stack-overflow",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "column-learning",
+      "width": "300px",
+      "createdAt": "2025-01-07T00:00:00.000Z",
+      "updatedAt": "2025-01-07T00:00:00.000Z",
+      "items": [
+        {
+          "id": "learning-folder",
+          "type": "folder",
+          "title": "📚 学習・教育",
+          "color": "#fff3e0",
+          "collapsed": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "coursera-bookmark",
+              "type": "bookmark",
+              "title": "Coursera - オンライン学習",
+              "url": "https://www.coursera.org",
+              "icon": "fas fa-graduation-cap",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "youtube-bookmark",
+              "type": "bookmark",
+              "title": "YouTube - 動画学習",
+              "url": "https://www.youtube.com",
+              "icon": "fab fa-youtube",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "documentation-folder",
+          "type": "folder",
+          "title": "📖 技術文書",
+          "color": "#f1f8e9",
+          "collapsed": true,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "mdn-bookmark",
+              "type": "bookmark",
+              "title": "MDN Web Docs",
+              "url": "https://developer.mozilla.org",
+              "icon": "fab fa-firefox",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "w3schools-bookmark",
+              "type": "bookmark",
+              "title": "W3Schools",
+              "url": "https://www.w3schools.com",
+              "icon": "fas fa-globe",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "news-bookmark",
+          "type": "bookmark",
+          "title": "BBC News - 世界のニュース",
+          "url": "https://www.bbc.com/news",
+          "icon": "fas fa-newspaper",
+          "isFavorite": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "column-entertainment",
+      "width": "280px",
+      "createdAt": "2025-01-07T00:00:00.000Z",
+      "updatedAt": "2025-01-07T00:00:00.000Z",
+      "items": [
+        {
+          "id": "entertainment-folder",
+          "type": "folder",
+          "title": "🎮 エンターテイメント",
+          "color": "#fce4ec",
+          "collapsed": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "netflix-bookmark",
+              "type": "bookmark",
+              "title": "Netflix - 動画ストリーミング",
+              "url": "https://www.netflix.com",
+              "icon": "fas fa-film",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "spotify-bookmark",
+              "type": "bookmark",
+              "title": "Spotify - 音楽ストリーミング",
+              "url": "https://www.spotify.com",
+              "icon": "fab fa-spotify",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "social-folder",
+          "type": "folder",
+          "title": "🌐 ソーシャル",
+          "color": "#e8eaf6",
+          "collapsed": false,
+          "createdAt": "2025-01-07T00:00:00.000Z",
+          "updatedAt": "2025-01-07T00:00:00.000Z",
+          "children": [
+            {
+              "id": "twitter-bookmark",
+              "type": "bookmark",
+              "title": "X (Twitter) - ソーシャルネットワーク",
+              "url": "https://x.com",
+              "icon": "fab fa-twitter",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            },
+            {
+              "id": "linkedin-bookmark",
+              "type": "bookmark",
+              "title": "LinkedIn - ビジネスネットワーク",
+              "url": "https://www.linkedin.com",
+              "icon": "fab fa-linkedin",
+              "isFavorite": false,
+              "createdAt": "2025-01-07T00:00:00.000Z",
+              "updatedAt": "2025-01-07T00:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "columnOrder": [
+    "column-welcome",
+    "column-productivity", 
+    "column-learning",
+    "column-entertainment"
+  ],
+  "favoritesOrder": [
+    "help-bookmark",
+    "example-bookmark-1",
+    "example-bookmark-2"
+  ]
+}
