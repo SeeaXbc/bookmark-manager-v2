@@ -1,22 +1,25 @@
-// Bookmark Manager v2 - Main JavaScript File
+// ブックマークマネージャ v2 - メインJavaScriptファイル
 
 class BookmarkManager {
+    // コンストラクタ - アプリケーションの初期化
     constructor() {
+        // アプリケーションデータの初期化
         this.data = {
-            appSettings: {},
-            columns: [],
-            columnOrder: [],
-            favoritesOrder: []
+            appSettings: {},     // アプリ設定
+            columns: [],         // カラムデータ
+            columnOrder: [],     // カラム順序
+            favoritesOrder: []   // お気に入り順序
         };
         
-        this.currentEditingItem = null;
-        this.currentEditingColumn = null;
-        this.contextMenuTarget = null;
-        this.colorPicker = null;
-        this.selectedIcon = 'fas fa-bookmark';
-        this.iconData = this.getIconData();
+        // 編集状態の管理
+        this.currentEditingItem = null;        // 現在編集中のアイテム
+        this.currentEditingColumn = null;      // 現在編集中のカラム
+        this.contextMenuTarget = null;         // コンテキストメニューの対象
+        this.colorPicker = null;               // カラーピッカーインスタンス
+        this.selectedIcon = 'fas fa-bookmark'; // 選択中のアイコン
+        this.iconData = this.getIconData();    // アイコンデータ
         
-        // Event handler references for cleanup
+        // イベントハンドラーの参照（クリーンアップ用）
         this.columnActionHandler = null;
         this.folderToggleHandler = null;
         this.bookmarkClickHandler = null;
@@ -24,15 +27,15 @@ class BookmarkManager {
         this.init();
     }
     
-    // Initialize the application
+    // アプリケーションの初期化
     init() {
-        this.loadData();
-        this.setupEventListeners();
-        this.initializeLibraries();
-        this.render();
+        this.loadData();             // データ読み込み
+        this.setupEventListeners();  // イベントリスナー設定
+        this.initializeLibraries();  // ライブラリ初期化
+        this.render();               // 画面描画
     }
     
-    // Generate UUID
+    // UUID生成
     generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             const r = Math.random() * 16 | 0;
@@ -41,14 +44,14 @@ class BookmarkManager {
         });
     }
     
-    // Convert hex color to rgba with opacity
+    // HEXカラーをRGBAに変換（透明度付き）
     hexToRgba(hex, opacity) {
         if (!hex) return 'transparent';
         
-        // Remove # if present
+        // #記号があれば削除
         hex = hex.replace('#', '');
         
-        // Parse RGB values
+        // RGB値を解析
         const r = parseInt(hex.substring(0, 2), 16);
         const g = parseInt(hex.substring(2, 4), 16);
         const b = parseInt(hex.substring(4, 6), 16);
@@ -56,31 +59,32 @@ class BookmarkManager {
         return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
     
-    // Data Management
+    // ===== データ管理 =====
     loadData() {
         const savedData = localStorage.getItem('bookmarkManager');
         if (savedData) {
             this.data = JSON.parse(savedData);
             
-            // Ensure all columns have width property
+            // 全カラムに幅プロパティが設定されていることを確認
             this.data.columns.forEach(column => {
                 if (!column.width) {
                     column.width = '300px';
                 }
             });
         } else {
-            // Create initial column if no data exists
+            // データが存在しない場合は初期カラムを作成
             this.addColumn();
         }
     }
     
+    // データをlocalStorageに保存
     saveData() {
         localStorage.setItem('bookmarkManager', JSON.stringify(this.data));
     }
     
-    // Library Initialization
+    // ===== ライブラリ初期化 =====
     initializeLibraries() {
-        // Initialize Micromodal
+        // Micromodal初期化
         MicroModal.init({
             onShow: modal => console.log(`${modal.id} is shown`),
             onClose: modal => console.log(`${modal.id} is hidden`),
@@ -94,7 +98,7 @@ class BookmarkManager {
         });
     }
     
-    // Event Listeners
+    // ===== イベントリスナー設定 =====
     setupEventListeners() {
         // Add Column Button
         document.getElementById('addColumnBtn').addEventListener('click', () => {
@@ -166,7 +170,7 @@ class BookmarkManager {
         });
     }
     
-    // Column Management
+    // ===== カラム管理 =====
     addColumn() {
         const columnId = this.generateUUID();
         const newColumn = {
@@ -200,7 +204,7 @@ class BookmarkManager {
         }
     }
     
-    // Item Management
+    // ===== アイテム管理 =====
     findItemById(itemId, items = null) {
         if (!items) {
             for (const column of this.data.columns) {
@@ -293,7 +297,7 @@ class BookmarkManager {
         }
     }
     
-    // Modal Management
+    // ===== モーダル管理 =====
     openItemModal(type) {
         const modal = document.getElementById('itemModal');
         const titleEl = document.getElementById('itemModal-title');
@@ -451,7 +455,7 @@ class BookmarkManager {
         }
     }
     
-    // Context Menu
+    // ===== コンテキストメニュー =====
     showContextMenu(e) {
         e.preventDefault();
         
@@ -596,7 +600,7 @@ class BookmarkManager {
         }
     }
     
-    // Rendering
+    // ===== 画面描画 =====
     render() {
         this.renderFavorites();
         this.renderColumns();
@@ -830,7 +834,7 @@ class BookmarkManager {
         }
     }
     
-    // Sortable Setup
+    // ===== ソート機能設定 =====
     setupSortable() {
         this.setupFavoritesSortable();
         this.setupColumnSortable();
@@ -931,7 +935,7 @@ class BookmarkManager {
         this.setupColumnSortable();
     }
     
-    // Icon Picker Data
+    // ===== アイコンピッカーデータ =====
     getIconData() {
         return {
             general: [
@@ -971,7 +975,7 @@ class BookmarkManager {
         };
     }
     
-    // Icon Picker Methods
+    // ===== アイコンピッカーメソッド =====
     openIconPicker() {
         this.selectedIcon = document.getElementById('itemIcon').value || 'fas fa-bookmark';
         this.renderIconPicker();
@@ -1055,7 +1059,7 @@ class BookmarkManager {
         });
     }
     
-    // Export/Import
+    // ===== エクスポート・インポート =====
     exportData() {
         const dataStr = JSON.stringify(this.data, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -1089,7 +1093,7 @@ class BookmarkManager {
         event.target.value = '';
     }
     
-    // Chrome Bookmarks Import
+    // ===== Chromeブックマークインポート =====
     importChromeBookmarks(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -1258,7 +1262,7 @@ class BookmarkManager {
     }
 }
 
-// Initialize the application
+// ===== アプリケーション初期化 =====
 let bookmarkManager;
 document.addEventListener('DOMContentLoaded', () => {
     bookmarkManager = new BookmarkManager();
