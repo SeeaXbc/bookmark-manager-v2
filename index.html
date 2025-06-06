@@ -31,6 +31,9 @@
             <button class="btn btn-import-chrome" id="importChromeBtn">
                 <i class="fab fa-chrome"></i> Chrome
             </button>
+            <button class="btn btn-help" id="helpBtn">
+                <i class="fas fa-question"></i> ヘルプ
+            </button>
             <input type="file" id="importFile" accept=".json" style="display: none;">
             <input type="file" id="importChromeFile" accept=".html" style="display: none;">
         </div>
@@ -117,6 +120,88 @@
                 <footer class="modal__footer">
                     <button class="btn btn-primary" id="saveItemBtn">保存</button>
                     <button class="btn btn-secondary" data-micromodal-close>キャンセル</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal micromodal-slide" id="helpModal" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container help-modal" role="dialog" aria-modal="true" aria-labelledby="helpModal-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="helpModal-title">
+                        <i class="fas fa-question-circle"></i> 使い方
+                    </h2>
+                    <button class="modal__close" aria-label="Close modal" data-micromodal-close>
+                        <i class="fas fa-times"></i>
+                    </button>
+                </header>
+                
+                <main class="modal__content" id="helpModal-content">
+                    <div class="help-section">
+                        <h3><i class="fas fa-mouse-pointer"></i> 基本操作</h3>
+                        <ul>
+                            <li><strong>右クリック:</strong> コンテキストメニューを表示（追加・編集・削除）</li>
+                            <li><strong>ドラッグ&ドロップ:</strong> アイテムやフォルダを移動</li>
+                            <li><strong>ブックマーククリック:</strong> 新しいタブでサイトを開く</li>
+                            <li><strong>フォルダの▶マーク:</strong> フォルダの展開・折りたたみ</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h3><i class="fas fa-columns"></i> カラム管理</h3>
+                        <ul>
+                            <li><strong>カラム追加:</strong> 右下の「+」ボタンをクリック</li>
+                            <li><strong>カラム削除:</strong> カラムヘッダーのゴミ箱アイコンまたは右クリック</li>
+                            <li><strong>カラムリサイズ:</strong> カラム右端をドラッグして幅を調整</li>
+                            <li><strong>カラム移動:</strong> カラムヘッダーのグリップをドラッグ</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h3><i class="fas fa-bookmark"></i> ブックマーク・フォルダ</h3>
+                        <ul>
+                            <li><strong>新規作成:</strong> 空白部分で右クリック → 「ブックマークを追加」または「フォルダを追加」</li>
+                            <li><strong>編集:</strong> アイテムを右クリック → 「編集」</li>
+                            <li><strong>削除:</strong> アイテムを右クリック → 「削除」</li>
+                            <li><strong>フォルダ内追加:</strong> フォルダを右クリック → 「ブックマークを追加」</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h3><i class="fas fa-star"></i> お気に入り機能</h3>
+                        <ul>
+                            <li><strong>お気に入り追加:</strong> ブックマークを右クリック → 「お気に入りに追加」</li>
+                            <li><strong>お気に入りアクセス:</strong> 上部のお気に入りバーからクリック</li>
+                            <li><strong>お気に入り並び替え:</strong> お気に入りバー内でドラッグ&ドロップ</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h3><i class="fas fa-cog"></i> その他の機能</h3>
+                        <ul>
+                            <li><strong>アイコン選択:</strong> ブックマーク編集時に「選択」ボタンをクリック</li>
+                            <li><strong>フォルダ色設定:</strong> フォルダ編集時にカラーピッカーで背景色を設定</li>
+                            <li><strong>データエクスポート:</strong> 「エクスポート」ボタンでJSONファイルに保存</li>
+                            <li><strong>データインポート:</strong> 「インポート」ボタンでJSONファイルから読み込み</li>
+                            <li><strong>Chrome連携:</strong> 「Chrome」ボタンでChromeブックマークをインポート</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-section help-tips">
+                        <h3><i class="fas fa-lightbulb"></i> Tips</h3>
+                        <ul>
+                            <li>フォルダの背景色は子要素にも薄く適用されます</li>
+                            <li>カラム幅は自動的に保存され、次回起動時にも維持されます</li>
+                            <li>データはブラウザのlocalStorageに自動保存されます</li>
+                            <li>定期的にエクスポートでバックアップを取ることをお勧めします</li>
+                        </ul>
+                    </div>
+                </main>
+                
+                <footer class="modal__footer">
+                    <button class="btn btn-secondary" data-micromodal-close>閉じる</button>
                 </footer>
             </div>
         </div>

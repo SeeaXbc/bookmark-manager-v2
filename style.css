@@ -122,6 +122,14 @@ body {
     background: #3367d6;
 }
 
+.btn-help {
+    background: #6f42c1;
+}
+
+.btn-help:hover {
+    background: #5a32a3;
+}
+
 /* Main Content */
 .main-content {
     height: calc(100vh - 60px);
@@ -524,6 +532,79 @@ body {
 .icon-picker-modal .modal__container {
     max-width: 600px;
     max-height: 80vh;
+}
+
+#helpModal .modal__container {
+    max-width: 1600px !important;
+    width: 90vw !important;
+    max-height: 85vh !important;
+}
+
+div#helpModal .modal__container {
+    max-width: 1600px !important;
+    width: 90vw !important;
+    max-height: 85vh !important;
+}
+
+#helpModal .modal__content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+}
+
+.help-section {
+    margin-bottom: 24px;
+}
+
+.help-tips {
+    grid-column: 1 / -1;
+}
+
+.help-section h3 {
+    color: #495057;
+    font-size: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.help-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.help-section li {
+    margin-bottom: 8px;
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.help-section li::before {
+    content: "•";
+    color: #007bff;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.help-section strong {
+    color: #343a40;
+}
+
+.help-tips {
+    background: #f8f9fa;
+    border-left: 4px solid #007bff;
+    padding: 16px;
+    border-radius: 0 4px 4px 0;
+}
+
+.help-tips h3 {
+    color: #007bff;
+    border-bottom: 1px solid #007bff;
 }
 
 .icon-search {

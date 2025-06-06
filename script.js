@@ -123,6 +123,20 @@ class BookmarkManager {
             this.importChromeBookmarks(e);
         });
         
+        // Help
+        document.getElementById('helpBtn').addEventListener('click', () => {
+            MicroModal.show('helpModal', {
+                onShow: () => {
+                    const helpContainer = document.querySelector('#helpModal .modal__container');
+                    if (helpContainer) {
+                        helpContainer.style.maxWidth = '1600px';
+                        helpContainer.style.width = '90vw';
+                        helpContainer.style.maxHeight = '85vh';
+                    }
+                }
+            });
+        });
+        
         // Context Menu
         document.addEventListener('contextmenu', (e) => {
             this.showContextMenu(e);
