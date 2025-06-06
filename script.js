@@ -16,6 +16,11 @@ class BookmarkManager {
         this.selectedIcon = 'fas fa-bookmark';
         this.iconData = this.getIconData();
         
+        // Event handler references for cleanup
+        this.columnActionHandler = null;
+        this.folderToggleHandler = null;
+        this.bookmarkClickHandler = null;
+        
         this.init();
     }
     
@@ -56,6 +61,13 @@ class BookmarkManager {
         const savedData = localStorage.getItem('bookmarkManager');
         if (savedData) {
             this.data = JSON.parse(savedData);
+            
+            // Ensure all columns have width property
+            this.data.columns.forEach(column => {
+                if (!column.width) {
+                    column.width = '300px';
+                }
+            });
         } else {
             // Create initial column if no data exists
             this.addColumn();
@@ -145,6 +157,7 @@ class BookmarkManager {
         const columnId = this.generateUUID();
         const newColumn = {
             id: columnId,
+            width: '300px', // Set default width
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             items: []
@@ -608,8 +621,13 @@ class BookmarkManager {
             .map(id => this.data.columns.find(col => col.id === id))
             .filter(col => col);
         
-        columnsContainer.innerHTML = orderedColumns.map(column => `
-            <div class="column" data-column-id="${column.id}" style="width: ${column.width || '300px'}">
+        columnsContainer.innerHTML = orderedColumns.map(column => {
+            // Ensure column has a width property
+            if (!column.width) {
+                column.width = '300px';
+            }
+            return `
+            <div class="column" data-column-id="${column.id}" style="width: ${column.width}">
                 <div class="column-header">
                     <div class="column-drag-handle">
                         <i class="fas fa-grip-vertical"></i>
@@ -625,11 +643,18 @@ class BookmarkManager {
                 </div>
                 <div class="column-resize-handle" data-column-id="${column.id}"></div>
             </div>
-        `).join('');
+            `;
+        }).join('');
         
-        // Add event listeners for column actions
-        document.querySelectorAll('.column-action-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+        // Add event listeners for column actions using event delegation
+        const existingHandler = this.columnActionHandler;
+        if (existingHandler) {
+            document.removeEventListener('click', existingHandler);
+        }
+        
+        this.columnActionHandler = (e) => {
+            const btn = e.target.closest('.column-action-btn');
+            if (btn) {
                 e.stopPropagation();
                 const action = btn.dataset.action;
                 const columnId = btn.dataset.columnId;
@@ -637,28 +662,43 @@ class BookmarkManager {
                 if (action === 'delete-column') {
                     this.deleteColumn(columnId);
                 }
-            });
-        });
+            }
+        };
         
-        // Add event listeners for folder toggles
-        document.querySelectorAll('.folder-toggle').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+        document.addEventListener('click', this.columnActionHandler);
+        
+        // Add event listeners for folder toggles using event delegation
+        const existingFolderHandler = this.folderToggleHandler;
+        if (existingFolderHandler) {
+            document.removeEventListener('click', existingFolderHandler);
+        }
+        
+        this.folderToggleHandler = (e) => {
+            const btn = e.target.closest('.folder-toggle');
+            if (btn) {
                 e.stopPropagation();
                 const itemId = btn.dataset.itemId;
                 this.toggleFolder(itemId);
-            });
-        });
+            }
+        };
         
-        // Add event listeners for bookmark clicks
-        document.querySelectorAll('.bookmark-content').forEach(el => {
-            el.addEventListener('click', (e) => {
-                // Don't trigger on right-click (context menu)
-                if (e.button === 0) {
-                    const itemId = el.dataset.itemId;
-                    this.openBookmark(itemId);
-                }
-            });
-        });
+        document.addEventListener('click', this.folderToggleHandler);
+        
+        // Add event listeners for bookmark clicks using event delegation
+        const existingBookmarkHandler = this.bookmarkClickHandler;
+        if (existingBookmarkHandler) {
+            document.removeEventListener('click', existingBookmarkHandler);
+        }
+        
+        this.bookmarkClickHandler = (e) => {
+            const el = e.target.closest('.bookmark-content');
+            if (el && e.button === 0) {
+                const itemId = el.dataset.itemId;
+                this.openBookmark(itemId);
+            }
+        };
+        
+        document.addEventListener('click', this.bookmarkClickHandler);
         
         // Add event listeners for column resize
         document.querySelectorAll('.column-resize-handle').forEach(handle => {

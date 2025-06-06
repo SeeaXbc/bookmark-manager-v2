@@ -134,8 +134,10 @@ body {
     gap: 16px;
     padding: 16px;
     overflow-x: auto;
+    overflow-y: hidden;
     flex: 1;
     height: 100%;
+    min-width: 0; /* Allow shrinking */
 }
 
 /* Column Styles */
@@ -150,7 +152,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-    resize: horizontal;
+    flex-shrink: 0; /* Prevent columns from shrinking */
     overflow: hidden;
 }
 
@@ -680,5 +682,6 @@ body {
     .column {
         width: 250px;
         min-width: 200px;
+        flex-shrink: 0; /* Maintain width on mobile */
     }
 }
