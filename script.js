@@ -23,6 +23,10 @@ class BookmarkManager {
         this.columnActionHandler = null;
         this.folderToggleHandler = null;
         this.bookmarkClickHandler = null;
+        this.iconSearchHandler = null;
+        this.iconCategoryHandlers = [];
+        this.iconGridHandler = null;
+        this.iconEscapeHandler = null;
         
         this.init();
     }
@@ -84,17 +88,26 @@ class BookmarkManager {
     
     // ===== ライブラリ初期化 =====
     initializeLibraries() {
-        // Micromodal初期化
+        // Micromodal初期化（手動で開くため最小限の設定）
         MicroModal.init({
             onShow: modal => console.log(`${modal.id} is shown`),
-            onClose: modal => console.log(`${modal.id} is hidden`),
-            openTrigger: 'data-custom-open',
-            closeTrigger: 'data-custom-close',
+            onClose: modal => {
+                console.log(`${modal.id} is hidden`);
+                // アイコンピッカーが閉じられた場合、親モーダルにフォーカスを戻す
+                if (modal.id === 'iconPickerModal') {
+                    setTimeout(() => {
+                        const titleInput = document.getElementById('itemTitle');
+                        if (titleInput) {
+                            titleInput.focus();
+                        }
+                    }, 100);
+                }
+            },
             disableScroll: true,
-            disableFocus: false,
+            disableFocus: true, // フォーカス管理を手動で行う
             awaitOpenAnimation: false,
             awaitCloseAnimation: false,
-            debugMode: true
+            debugMode: false // エラーメッセージを無効化
         });
     }
     
@@ -160,8 +173,14 @@ class BookmarkManager {
         });
         
         // Icon Picker
-        document.getElementById('iconPickerBtn').addEventListener('click', () => {
-            this.openIconPicker();
+        document.getElementById('iconPickerBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // フォーカスを外してからアイコンピッカーを開く
+            e.target.blur();
+            setTimeout(() => {
+                this.openIconPicker();
+            }, 100);
         });
         
         // Prevent context menu on modal
@@ -978,8 +997,61 @@ class BookmarkManager {
     // ===== アイコンピッカーメソッド =====
     openIconPicker() {
         this.selectedIcon = document.getElementById('itemIcon').value || 'fas fa-bookmark';
+        
+        // 親モーダル内のフォーカスをクリア
+        const activeElement = document.activeElement;
+        if (activeElement && activeElement.blur) {
+            activeElement.blur();
+        }
+        
         this.renderIconPicker();
-        MicroModal.show('iconPickerModal');
+        
+        // MicroModalを使わず直接表示
+        const iconModal = document.getElementById('iconPickerModal');
+        if (iconModal) {
+            iconModal.classList.add('is-open');
+            iconModal.setAttribute('aria-hidden', 'false');
+            
+            // 検索フィールドにフォーカス
+            setTimeout(() => {
+                const searchInput = document.getElementById('iconSearch');
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }, 100);
+            
+            // ESCキーで閉じる
+            this.iconEscapeHandler = (e) => {
+                if (e.key === 'Escape') {
+                    this.closeIconPicker();
+                    document.removeEventListener('keydown', this.iconEscapeHandler);
+                }
+            };
+            document.addEventListener('keydown', this.iconEscapeHandler);
+        }
+    }
+    
+    // アイコンピッカーを閉じる
+    closeIconPicker() {
+        const iconModal = document.getElementById('iconPickerModal');
+        if (iconModal) {
+            iconModal.classList.remove('is-open');
+            iconModal.setAttribute('aria-hidden', 'true');
+            
+            // ESCキーハンドラーをクリーンアップ
+            if (this.iconEscapeHandler) {
+                document.removeEventListener('keydown', this.iconEscapeHandler);
+                this.iconEscapeHandler = null;
+            }
+            
+            // 親モーダルにフォーカスを戻す
+            setTimeout(() => {
+                const titleInput = document.getElementById('itemTitle');
+                if (titleInput) {
+                    titleInput.focus();
+                }
+            }, 100);
+        }
     }
     
     renderIconPicker() {
@@ -987,21 +1059,71 @@ class BookmarkManager {
         const searchInput = document.getElementById('iconSearch');
         const categoryBtns = document.querySelectorAll('.icon-category-btn');
         
+        // 既存のイベントリスナーをクリア
+        if (this.iconSearchHandler) {
+            searchInput.removeEventListener('input', this.iconSearchHandler);
+        }
+        
         // Setup search
-        searchInput.addEventListener('input', () => {
+        this.iconSearchHandler = () => {
             this.filterIcons();
-        });
+        };
+        searchInput.addEventListener('input', this.iconSearchHandler);
+        
+        // 既存のカテゴリボタンイベントリスナーをクリア
+        if (this.iconCategoryHandlers) {
+            categoryBtns.forEach((btn, index) => {
+                if (this.iconCategoryHandlers[index]) {
+                    btn.removeEventListener('click', this.iconCategoryHandlers[index]);
+                }
+            });
+        }
         
         // Setup category buttons
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
+        this.iconCategoryHandlers = [];
+        categoryBtns.forEach((btn, index) => {
+            const handler = () => {
                 categoryBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 this.filterIcons();
-            });
+            };
+            this.iconCategoryHandlers[index] = handler;
+            btn.addEventListener('click', handler);
         });
         
         this.filterIcons();
+        
+        // キャンセルボタンとオーバーレイクリックの処理
+        const iconModal = document.getElementById('iconPickerModal');
+        const iconOverlay = iconModal.querySelector('.modal__overlay');
+        const iconCloseBtn = iconModal.querySelector('[data-micromodal-close]');
+        
+        // オーバーレイクリックで閉じる
+        if (iconOverlay && !iconOverlay.hasAttribute('data-icon-picker-handled')) {
+            iconOverlay.setAttribute('data-icon-picker-handled', 'true');
+            iconOverlay.addEventListener('click', (e) => {
+                if (e.target === iconOverlay) {
+                    this.closeIconPicker();
+                }
+            });
+        }
+        
+        // キャンセルボタンで閉じる
+        if (iconCloseBtn && !iconCloseBtn.hasAttribute('data-icon-picker-handled')) {
+            iconCloseBtn.setAttribute('data-icon-picker-handled', 'true');
+            iconCloseBtn.addEventListener('click', () => {
+                this.closeIconPicker();
+            });
+        }
+        
+        // フッターのキャンセルボタンも処理
+        const footerCloseBtn = iconModal.querySelector('.modal__footer [data-micromodal-close]');
+        if (footerCloseBtn && !footerCloseBtn.hasAttribute('data-icon-picker-handled')) {
+            footerCloseBtn.setAttribute('data-icon-picker-handled', 'true');
+            footerCloseBtn.addEventListener('click', () => {
+                this.closeIconPicker();
+            });
+        }
     }
     
     filterIcons() {
@@ -1034,8 +1156,13 @@ class BookmarkManager {
             </div>
         `).join('');
         
+        // 既存のアイコングリッドイベントリスナーをクリア
+        if (this.iconGridHandler) {
+            iconGrid.removeEventListener('click', this.iconGridHandler);
+        }
+        
         // Add click handlers
-        iconGrid.addEventListener('click', (e) => {
+        this.iconGridHandler = (e) => {
             const iconItem = e.target.closest('.icon-item');
             if (iconItem) {
                 // Remove previous selection
@@ -1054,9 +1181,10 @@ class BookmarkManager {
                 document.getElementById('selectedIconPreview').className = this.selectedIcon;
                 
                 // Close modal
-                MicroModal.close('iconPickerModal');
+                this.closeIconPicker();
             }
-        });
+        };
+        iconGrid.addEventListener('click', this.iconGridHandler);
     }
     
     // ===== エクスポート・インポート =====
