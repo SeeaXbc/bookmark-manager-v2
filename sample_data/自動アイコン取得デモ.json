@@ -1,0 +1,240 @@
+{
+  "appSettings": {},
+  "columns": [
+    {
+      "id": "demo-column-1",
+      "width": "350px",
+      "createdAt": "2025-01-09T10:00:00.000Z",
+      "updatedAt": "2025-01-09T10:30:00.000Z",
+      "items": [
+        {
+          "id": "demo-social-folder",
+          "type": "folder",
+          "title": "ソーシャルメディア",
+          "color": "#e1f5fe",
+          "createdAt": "2025-01-09T10:05:00.000Z",
+          "updatedAt": "2025-01-09T10:05:00.000Z",
+          "children": [
+            {
+              "id": "demo-twitter",
+              "type": "bookmark",
+              "title": "Twitter (X)",
+              "url": "https://twitter.com",
+              "icon": "fab fa-twitter",
+              "isFavorite": true,
+              "createdAt": "2025-01-09T10:06:00.000Z",
+              "updatedAt": "2025-01-09T10:06:00.000Z"
+            },
+            {
+              "id": "demo-instagram",
+              "type": "bookmark",
+              "title": "Instagram",
+              "url": "https://instagram.com",
+              "icon": "fab fa-instagram",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:07:00.000Z",
+              "updatedAt": "2025-01-09T10:07:00.000Z"
+            },
+            {
+              "id": "demo-linkedin",
+              "type": "bookmark",
+              "title": "LinkedIn",
+              "url": "https://linkedin.com",
+              "icon": "fab fa-linkedin",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:08:00.000Z",
+              "updatedAt": "2025-01-09T10:08:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "demo-tech-folder",
+          "type": "folder",
+          "title": "開発・技術",
+          "color": "#f3e5f5",
+          "createdAt": "2025-01-09T10:10:00.000Z",
+          "updatedAt": "2025-01-09T10:10:00.000Z",
+          "children": [
+            {
+              "id": "demo-github",
+              "type": "bookmark",
+              "title": "GitHub",
+              "url": "https://github.com",
+              "icon": "fab fa-github",
+              "isFavorite": true,
+              "createdAt": "2025-01-09T10:11:00.000Z",
+              "updatedAt": "2025-01-09T10:11:00.000Z"
+            },
+            {
+              "id": "demo-stackoverflow",
+              "type": "bookmark",
+              "title": "Stack Overflow",
+              "url": "https://stackoverflow.com",
+              "icon": "fab fa-stack-overflow",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:12:00.000Z",
+              "updatedAt": "2025-01-09T10:12:00.000Z"
+            },
+            {
+              "id": "demo-codepen",
+              "type": "bookmark",
+              "title": "CodePen",
+              "url": "https://codepen.io",
+              "icon": "fab fa-codepen",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:13:00.000Z",
+              "updatedAt": "2025-01-09T10:13:00.000Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "demo-column-2",
+      "width": "320px",
+      "createdAt": "2025-01-09T10:15:00.000Z",
+      "updatedAt": "2025-01-09T10:25:00.000Z",
+      "items": [
+        {
+          "id": "demo-search-folder",
+          "type": "folder",
+          "title": "検索エンジン",
+          "color": "#fff3e0",
+          "createdAt": "2025-01-09T10:16:00.000Z",
+          "updatedAt": "2025-01-09T10:16:00.000Z",
+          "children": [
+            {
+              "id": "demo-google",
+              "type": "bookmark",
+              "title": "Google",
+              "url": "https://google.com",
+              "icon": "fab fa-google",
+              "isFavorite": true,
+              "createdAt": "2025-01-09T10:17:00.000Z",
+              "updatedAt": "2025-01-09T10:17:00.000Z"
+            },
+            {
+              "id": "demo-duckduckgo",
+              "type": "bookmark",
+              "title": "DuckDuckGo",
+              "url": "https://duckduckgo.com",
+              "icon": "fas fa-search",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:18:00.000Z",
+              "updatedAt": "2025-01-09T10:18:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "demo-media-folder",
+          "type": "folder",
+          "title": "メディア・エンタメ",
+          "color": "#ffebee",
+          "createdAt": "2025-01-09T10:20:00.000Z",
+          "updatedAt": "2025-01-09T10:20:00.000Z",
+          "children": [
+            {
+              "id": "demo-youtube",
+              "type": "bookmark",
+              "title": "YouTube",
+              "url": "https://youtube.com",
+              "icon": "fab fa-youtube",
+              "isFavorite": true,
+              "createdAt": "2025-01-09T10:21:00.000Z",
+              "updatedAt": "2025-01-09T10:21:00.000Z"
+            },
+            {
+              "id": "demo-spotify",
+              "type": "bookmark",
+              "title": "Spotify",
+              "url": "https://spotify.com",
+              "icon": "fab fa-spotify",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:22:00.000Z",
+              "updatedAt": "2025-01-09T10:22:00.000Z"
+            },
+            {
+              "id": "demo-netflix",
+              "type": "bookmark",
+              "title": "Netflix",
+              "url": "https://netflix.com",
+              "icon": "fas fa-film",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:23:00.000Z",
+              "updatedAt": "2025-01-09T10:23:00.000Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "demo-column-3",
+      "width": "300px",
+      "createdAt": "2025-01-09T10:25:00.000Z",
+      "updatedAt": "2025-01-09T10:30:00.000Z",
+      "items": [
+        {
+          "id": "demo-work-folder",
+          "type": "folder",
+          "title": "仕事・ビジネス",
+          "color": "#e8f5e8",
+          "createdAt": "2025-01-09T10:26:00.000Z",
+          "updatedAt": "2025-01-09T10:26:00.000Z",
+          "children": [
+            {
+              "id": "demo-microsoft",
+              "type": "bookmark",
+              "title": "Microsoft 365",
+              "url": "https://office.com",
+              "icon": "fab fa-microsoft",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:27:00.000Z",
+              "updatedAt": "2025-01-09T10:27:00.000Z"
+            },
+            {
+              "id": "demo-slack",
+              "type": "bookmark",
+              "title": "Slack",
+              "url": "https://slack.com",
+              "icon": "fab fa-slack",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T10:28:00.000Z",
+              "updatedAt": "2025-01-09T10:28:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "demo-news-bookmark",
+          "type": "bookmark",
+          "title": "BBC News",
+          "url": "https://bbc.com/news",
+          "icon": "fas fa-newspaper",
+          "isFavorite": false,
+          "createdAt": "2025-01-09T10:29:00.000Z",
+          "updatedAt": "2025-01-09T10:29:00.000Z"
+        },
+        {
+          "id": "demo-weather-bookmark",
+          "type": "bookmark",
+          "title": "天気予報",
+          "url": "https://weather.com",
+          "icon": "fas fa-cloud-sun",
+          "isFavorite": false,
+          "createdAt": "2025-01-09T10:30:00.000Z",
+          "updatedAt": "2025-01-09T10:30:00.000Z"
+        }
+      ]
+    }
+  ],
+  "columnOrder": [
+    "demo-column-1",
+    "demo-column-2", 
+    "demo-column-3"
+  ],
+  "favoritesOrder": [
+    "demo-twitter",
+    "demo-github",
+    "demo-google",
+    "demo-youtube"
+  ]
+}

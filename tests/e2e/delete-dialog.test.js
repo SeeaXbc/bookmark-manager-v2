@@ -79,7 +79,7 @@ test.describe('削除確認ダイアログ', () => {
     await expect(page.locator('.column')).toHaveCount(1);
 
     // カラムヘッダーの削除ボタンをクリック
-    await page.locator('.column-header .column-action[data-action="delete-column"]').click();
+    await page.locator('.column-header .column-action-btn[data-action="delete-column"]').click();
 
     // 削除確認ダイアログが表示されることを確認
     await expect(page.locator('#confirmDeleteModal')).toBeVisible();

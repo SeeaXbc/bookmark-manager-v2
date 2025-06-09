@@ -277,6 +277,18 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
     <script src="https://unpkg.com/vanilla-picker@2/dist/vanilla-picker.min.js"></script>
-    <script src="script.js"></script>
+    
+    <!-- Application Scripts - Load order is important -->
+    <script src="js/Utils.js"></script>
+    <script src="js/IconService.js"></script>
+    <script src="js/BookmarkManager.js"></script>
+    
+    <!-- Application Initialization -->
+    <script>
+        let bookmarkManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            bookmarkManager = new BookmarkManager();
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,169 @@
+{
+  "appSettings": {},
+  "columns": [
+    {
+      "id": "test-column-auto-icon",
+      "width": "380px",
+      "createdAt": "2025-01-09T11:00:00.000Z",
+      "updatedAt": "2025-01-09T11:15:00.000Z",
+      "items": [
+        {
+          "id": "test-auto-icon-folder",
+          "type": "folder",
+          "title": "自動アイコン取得テスト",
+          "color": "#e3f2fd",
+          "createdAt": "2025-01-09T11:01:00.000Z",
+          "updatedAt": "2025-01-09T11:01:00.000Z",
+          "children": [
+            {
+              "id": "test-amazon",
+              "type": "bookmark",
+              "title": "Amazon",
+              "url": "https://amazon.co.jp",
+              "icon": "fab fa-amazon",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T11:02:00.000Z",
+              "updatedAt": "2025-01-09T11:02:00.000Z"
+            },
+            {
+              "id": "test-apple",
+              "type": "bookmark",
+              "title": "Apple",
+              "url": "https://apple.com",
+              "icon": "fab fa-apple",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T11:03:00.000Z",
+              "updatedAt": "2025-01-09T11:03:00.000Z"
+            },
+            {
+              "id": "test-reddit",
+              "type": "bookmark",
+              "title": "Reddit",
+              "url": "https://reddit.com",
+              "icon": "fab fa-reddit",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T11:04:00.000Z",
+              "updatedAt": "2025-01-09T11:04:00.000Z"
+            },
+            {
+              "id": "test-wikipedia",
+              "type": "bookmark",
+              "title": "Wikipedia",
+              "url": "https://wikipedia.org",
+              "icon": "fab fa-wikipedia-w",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T11:05:00.000Z",
+              "updatedAt": "2025-01-09T11:05:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "test-communication-folder",
+          "type": "folder",
+          "title": "コミュニケーション",
+          "color": "#f1f8e9",
+          "createdAt": "2025-01-09T11:06:00.000Z",
+          "updatedAt": "2025-01-09T11:06:00.000Z",
+          "children": [
+            {
+              "id": "test-discord",
+              "type": "bookmark",
+              "title": "Discord",
+              "url": "https://discord.com",
+              "icon": "fab fa-discord",
+              "isFavorite": true,
+              "createdAt": "2025-01-09T11:07:00.000Z",
+              "updatedAt": "2025-01-09T11:07:00.000Z"
+            },
+            {
+              "id": "test-telegram",
+              "type": "bookmark",
+              "title": "Telegram",
+              "url": "https://telegram.org",
+              "icon": "fab fa-telegram",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T11:08:00.000Z",
+              "updatedAt": "2025-01-09T11:08:00.000Z"
+            },
+            {
+              "id": "test-whatsapp",
+              "type": "bookmark",
+              "title": "WhatsApp",
+              "url": "https://whatsapp.com",
+              "icon": "fab fa-whatsapp",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T11:09:00.000Z",
+              "updatedAt": "2025-01-09T11:09:00.000Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "test-column-fallback",
+      "width": "340px",
+      "createdAt": "2025-01-09T11:10:00.000Z",
+      "updatedAt": "2025-01-09T11:15:00.000Z",
+      "items": [
+        {
+          "id": "test-shopping-folder",
+          "type": "folder",
+          "title": "ショッピング（フォールバック機能テスト）",
+          "color": "#fce4ec",
+          "createdAt": "2025-01-09T11:11:00.000Z",
+          "updatedAt": "2025-01-09T11:11:00.000Z",
+          "children": [
+            {
+              "id": "test-generic-shop1",
+              "type": "bookmark",
+              "title": "Generic Shop 1",
+              "url": "https://example-shop.com",
+              "icon": "fas fa-shopping-cart",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T11:12:00.000Z",
+              "updatedAt": "2025-01-09T11:12:00.000Z"
+            },
+            {
+              "id": "test-generic-shop2",
+              "type": "bookmark",
+              "title": "Online Store Example",
+              "url": "https://store-example.com",
+              "icon": "fas fa-shopping-cart",
+              "isFavorite": false,
+              "createdAt": "2025-01-09T11:13:00.000Z",
+              "updatedAt": "2025-01-09T11:13:00.000Z"
+            }
+          ]
+        },
+        {
+          "id": "test-email-bookmark",
+          "type": "bookmark",
+          "title": "Gmail",
+          "url": "https://mail.google.com",
+          "icon": "fas fa-envelope",
+          "isFavorite": true,
+          "createdAt": "2025-01-09T11:14:00.000Z",
+          "updatedAt": "2025-01-09T11:14:00.000Z"
+        },
+        {
+          "id": "test-game-bookmark",
+          "type": "bookmark",
+          "title": "Steam",
+          "url": "https://store.steampowered.com/games",
+          "icon": "fas fa-gamepad",
+          "isFavorite": false,
+          "createdAt": "2025-01-09T11:15:00.000Z",
+          "updatedAt": "2025-01-09T11:15:00.000Z"
+        }
+      ]
+    }
+  ],
+  "columnOrder": [
+    "test-column-auto-icon",
+    "test-column-fallback"
+  ],
+  "favoritesOrder": [
+    "test-discord",
+    "test-email-bookmark"
+  ]
+}
