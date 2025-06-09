@@ -130,6 +130,15 @@ body {
     background: #5a32a3;
 }
 
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
 /* Main Content */
 .main-content {
     height: calc(100vh - 60px);
@@ -765,4 +774,29 @@ div#helpModal .modal__container {
         min-width: 200px;
         flex-shrink: 0; /* Maintain width on mobile */
     }
+}
+
+/* Confirm Delete Modal Styles */
+.confirm-delete-modal .modal__container {
+    max-width: 400px;
+}
+
+.confirm-delete-modal .modal__title {
+    color: #dc3545;
+}
+
+.confirm-delete-modal .modal__content {
+    text-align: center;
+    padding: 24px;
+}
+
+.confirm-delete-modal .confirm-message {
+    font-size: 16px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.confirm-delete-modal .modal__footer {
+    justify-content: center;
+    gap: 12px;
 }

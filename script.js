@@ -16,8 +16,9 @@ class BookmarkManager {
         this.currentEditingColumn = null;      // 現在編集中のカラム
         this.contextMenuTarget = null;         // コンテキストメニューの対象
         this.colorPicker = null;               // カラーピッカーインスタンス
-        this.selectedIcon = 'fas fa-bookmark'; // 選択中のアイコン
+        this.selectedIcon = 'fas fa-bookmark'; // 選択中のアイテム
         this.iconData = this.getIconData();    // アイコンデータ
+        this.isDeleting = false;               // 削除処理中フラグ
         
         // イベントハンドラーの参照（クリーンアップ用）
         this.columnActionHandler = null;
@@ -208,7 +209,11 @@ class BookmarkManager {
     }
     
     deleteColumn(columnId) {
-        if (confirm('このカラムを削除しますか？中身も一緒に削除されます。')) {
+        if (this.isDeleting) return;
+        
+        this.showConfirmDialog('このカラムを削除しますか？中身も一緒に削除されます。', () => {
+            this.isDeleting = true;
+            
             this.data.columns = this.data.columns.filter(col => col.id !== columnId);
             this.data.columnOrder = this.data.columnOrder.filter(id => id !== columnId);
             
@@ -220,7 +225,9 @@ class BookmarkManager {
             
             this.saveData();
             this.render();
-        }
+            
+            this.isDeleting = false;
+        });
     }
     
     // ===== アイテム管理 =====
@@ -263,7 +270,11 @@ class BookmarkManager {
     }
     
     deleteItem(itemId) {
-        if (confirm('このアイテムを削除しますか？')) {
+        if (this.isDeleting) return;
+        
+        this.showConfirmDialog('このアイテムを削除しますか？', () => {
+            this.isDeleting = true;
+            
             this.removeItemRecursive(itemId);
             
             // Remove from favorites if it exists
@@ -271,7 +282,9 @@ class BookmarkManager {
             
             this.saveData();
             this.render();
-        }
+            
+            this.isDeleting = false;
+        });
     }
     
     removeItemRecursive(itemId, items = null) {
@@ -472,6 +485,29 @@ class BookmarkManager {
         if (existingItem) {
             Object.assign(existingItem, itemData);
         }
+    }
+    
+    // カスタム削除確認ダイアログを表示
+    showConfirmDialog(message, callback) {
+        const modal = document.getElementById('confirmDeleteModal');
+        const messageElement = document.getElementById('confirmDeleteMessage');
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        
+        // メッセージを設定
+        messageElement.textContent = message;
+        
+        // 既存のイベントリスナーを削除
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        
+        // 新しいイベントリスナーを追加
+        newConfirmBtn.addEventListener('click', () => {
+            MicroModal.close('confirmDeleteModal');
+            callback();
+        }, { once: true });
+        
+        // モーダルを表示
+        MicroModal.show('confirmDeleteModal');
     }
     
     // ===== コンテキストメニュー =====
