@@ -14,6 +14,29 @@ npm install
 npx playwright install
 ```
 
+### 2. システム依存関係のインストール（E2Eテスト用）
+WSLやLinux環境でPlaywrightを初回実行する場合、システム依存関係が必要です：
+
+```bash
+# Playwrightの依存関係を自動インストール
+sudo npx playwright install-deps
+
+# または手動でパッケージをインストール
+sudo apt-get update
+sudo apt-get install libnss3 libnspr4 libasound2t64
+```
+
+**Windows環境の場合**: 通常は追加インストール不要です。
+
+### 3. 動作確認
+```bash
+# 単体テストで動作確認
+npm test
+
+# 問題がある場合はE2Eテストをヘッド付きで実行
+npm run test:e2e:headed
+```
+
 ## テストの実行
 
 ### 単体テスト（Jest）
@@ -67,21 +90,46 @@ npm run test:all
 
 ## トラブルシューティング
 
+### システム依存関係エラー
+E2Eテストで「Host system is missing dependencies」エラーが出る場合：
+```bash
+sudo npx playwright install-deps
+```
+
 ### Playwrightブラウザがインストールされていない場合
 ```bash
 npx playwright install
 ```
 
-### テストが失敗する場合
+### 単体テストでBookmarkManagerが見つからない場合
+1. `script.js`ファイルが存在することを確認
+2. 構文エラーがないかチェック
+3. モックが正常に動作していることを確認
+
+### E2Eテストが失敗する場合
 1. `npm run test:e2e:headed` でブラウザを表示してテスト実行
 2. `playwright-report/index.html` でテスト結果レポートを確認
 3. `test-results/` フォルダのスクリーンショットを確認
+4. WSL環境の場合、追加設定が必要な場合があります
+
+### WSL環境での注意点
+```bash
+# WSLでのDisplay設定（必要に応じて）
+export DISPLAY=:0
+
+# WSL2でのメモリ制限設定
+echo '[wsl2]
+memory=4GB' > ~/.wslconfig
+```
 
 ### Node.jsのバージョンが古い場合
 Node.js 16以上が必要です：
 ```bash
 node --version
 ```
+
+### ファイルパスエラー
+Windows環境でパスエラーが出る場合、GitBashまたはPowerShellで実行してください。
 
 ## ファイル構成
 

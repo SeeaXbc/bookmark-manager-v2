@@ -6,13 +6,14 @@ const { test, expect } = require('@playwright/test');
 test.describe('削除確認ダイアログ', () => {
   test.beforeEach(async ({ page }) => {
     // index.htmlをロード
-    await page.goto('file://' + __dirname + '/../../index.html');
+    const filePath = require('path').resolve(__dirname, '../../index.html');
+    await page.goto(`file://${filePath}`);
     
     // ページが完全に読み込まれるまで待機
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // アプリケーションが初期化されるまで待機
-    await page.waitForSelector('.columns-container');
+    await page.waitForSelector('.columns-container', { timeout: 10000 });
   });
 
   test('ブックマーク削除ダイアログが正しく動作する', async ({ page }) => {

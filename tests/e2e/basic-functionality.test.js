@@ -3,9 +3,10 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('基本機能テスト', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('file://' + __dirname + '/../../index.html');
-    await page.waitForLoadState('networkidle');
-    await page.waitForSelector('.columns-container');
+    const filePath = require('path').resolve(__dirname, '../../index.html');
+    await page.goto(`file://${filePath}`);
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForSelector('.columns-container', { timeout: 10000 });
   });
 
   test('アプリケーションが正しく読み込まれる', async ({ page }) => {
