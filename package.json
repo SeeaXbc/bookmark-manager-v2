@@ -1,0 +1,38 @@
+{
+  "name": "bookmark-manager-v2",
+  "version": "2.0.0",
+  "description": "Multi-column bookmark manager with drag-and-drop functionality",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "install-browsers": "playwright install"
+  },
+  "keywords": [
+    "bookmark",
+    "manager",
+    "drag-drop",
+    "vanilla-javascript"
+  ],
+  "author": "SeeaXbc",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup/jest-setup.js"],
+    "testMatch": [
+      "<rootDir>/tests/unit/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "script.js",
+      "!**/node_modules/**"
+    ]
+  }
+}
