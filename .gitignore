@@ -3,6 +3,13 @@ CLAUDE.md
 docs/
 設計書.txt
 
+# Test output files
+node_modules/
+coverage/
+playwright-report/
+test-results/
+*.tgz
+
 # Editor and system files
 .DS_Store
 Thumbs.db

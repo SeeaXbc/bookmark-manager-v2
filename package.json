@@ -9,7 +9,8 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "install-browsers": "playwright install"
+    "test:all": "npm test && npm run test:e2e",
+    "setup": "npm install && npx playwright install"
   },
   "keywords": [
     "bookmark",
