@@ -3,8 +3,9 @@
 
 class IconService {
     constructor() {
-        // アイコンキャッシュ
+        // アイコンキャッシュ（永続化対応）
         this.iconCache = new Map();
+        this.loadIconCache();
         
         // アイコンピッカー関連の状態
         this.selectedIcon = 'fas fa-bookmark';
@@ -15,6 +16,9 @@ class IconService {
         
         // アイコンデータの初期化
         this.iconData = this.getIconData();
+        
+        // ページ読み込み時にファビコンスタイルを復元
+        this.restoreFaviconStyles();
     }
     
     // ===== 自動アイコン取得機能 =====
@@ -43,6 +47,7 @@ class IconService {
                 const icon = await method();
                 if (icon && icon !== 'fas fa-bookmark') {
                     this.iconCache.set(domain, icon);
+                    this.saveIconCache();
                     return icon;
                 }
             }
@@ -50,12 +55,14 @@ class IconService {
             // すべて失敗した場合は既存のロジックを使用
             const fallbackIcon = this.getIconFromUrlPattern(url);
             this.iconCache.set(domain, fallbackIcon);
+            this.saveIconCache();
             return fallbackIcon;
             
         } catch (error) {
             console.warn('アイコン取得エラー:', error);
             const fallbackIcon = this.getIconFromUrlPattern(url);
             this.iconCache.set(domain, fallbackIcon);
+            this.saveIconCache();
             return fallbackIcon;
         }
     }
@@ -66,11 +73,20 @@ class IconService {
             const img = new Image();
             const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
             
-            img.onload = () => {
-                // アイコンが正常に読み込まれた場合、カスタムクラスを作成
-                const iconClass = `custom-favicon-${domain.replace(/\./g, '-')}`;
-                this.addCustomFaviconStyle(iconClass, faviconUrl);
-                resolve(iconClass);
+            img.onload = async () => {
+                try {
+                    // アイコンをBase64に変換して永続化
+                    const base64Icon = await this.convertImageToBase64(img);
+                    const iconClass = `custom-favicon-${domain.replace(/\./g, '-')}`;
+                    this.addCustomFaviconStyle(iconClass, base64Icon);
+                    resolve(iconClass);
+                } catch (error) {
+                    console.warn('Base64変換エラー:', error);
+                    // フォールバックとして元のURLを使用
+                    const iconClass = `custom-favicon-${domain.replace(/\./g, '-')}`;
+                    this.addCustomFaviconStyle(iconClass, faviconUrl);
+                    resolve(iconClass);
+                }
             };
             
             img.onerror = () => {
@@ -92,10 +108,20 @@ class IconService {
             const img = new Image();
             const faviconUrl = `https://icons.duckduckgo.com/ip3/${domain}.ico`;
             
-            img.onload = () => {
-                const iconClass = `custom-favicon-ddg-${domain.replace(/\./g, '-')}`;
-                this.addCustomFaviconStyle(iconClass, faviconUrl);
-                resolve(iconClass);
+            img.onload = async () => {
+                try {
+                    // アイコンをBase64に変換して永続化
+                    const base64Icon = await this.convertImageToBase64(img);
+                    const iconClass = `custom-favicon-ddg-${domain.replace(/\./g, '-')}`;
+                    this.addCustomFaviconStyle(iconClass, base64Icon);
+                    resolve(iconClass);
+                } catch (error) {
+                    console.warn('Base64変換エラー:', error);
+                    // フォールバックとして元のURLを使用
+                    const iconClass = `custom-favicon-ddg-${domain.replace(/\./g, '-')}`;
+                    this.addCustomFaviconStyle(iconClass, faviconUrl);
+                    resolve(iconClass);
+                }
             };
             
             img.onerror = () => {
@@ -134,6 +160,50 @@ class IconService {
             }
         `;
         document.head.appendChild(style);
+        
+        // localStorageにファビコンスタイルを保存
+        this.saveFaviconStyle(className, faviconUrl);
+    }
+    
+    // ファビコンスタイルをlocalStorageに保存
+    saveFaviconStyle(className, faviconUrl) {
+        try {
+            const savedStyles = JSON.parse(localStorage.getItem('faviconStyles') || '{}');
+            savedStyles[className] = faviconUrl;
+            localStorage.setItem('faviconStyles', JSON.stringify(savedStyles));
+        } catch (error) {
+            console.warn('ファビコンスタイル保存エラー:', error);
+        }
+    }
+    
+    // ページ読み込み時にファビコンスタイルを復元
+    restoreFaviconStyles() {
+        try {
+            const savedStyles = JSON.parse(localStorage.getItem('faviconStyles') || '{}');
+            Object.entries(savedStyles).forEach(([className, faviconUrl]) => {
+                // 既存のスタイルがない場合のみ復元
+                if (!document.querySelector(`style[data-favicon="${className}"]`)) {
+                    const style = document.createElement('style');
+                    style.setAttribute('data-favicon', className);
+                    style.textContent = `
+                        .${className}::before {
+                            content: '';
+                            display: inline-block;
+                            width: 16px;
+                            height: 16px;
+                            background-image: url('${faviconUrl}');
+                            background-size: contain;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            vertical-align: text-bottom;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            });
+        } catch (error) {
+            console.warn('ファビコンスタイル復元エラー:', error);
+        }
     }
     
     // URLパターンから既存のロジックでアイコンを判定
@@ -410,5 +480,49 @@ class IconService {
             }
         };
         iconGrid.addEventListener('click', this.iconGridHandler);
+    }
+    
+    // アイコンキャッシュを保存
+    saveIconCache() {
+        try {
+            const cacheObject = Object.fromEntries(this.iconCache);
+            localStorage.setItem('iconCache', JSON.stringify(cacheObject));
+        } catch (error) {
+            console.warn('アイコンキャッシュ保存エラー:', error);
+        }
+    }
+    
+    // アイコンキャッシュを読み込み
+    loadIconCache() {
+        try {
+            const savedCache = JSON.parse(localStorage.getItem('iconCache') || '{}');
+            this.iconCache = new Map(Object.entries(savedCache));
+        } catch (error) {
+            console.warn('アイコンキャッシュ読み込みエラー:', error);
+            this.iconCache = new Map();
+        }
+    }
+    
+    // 画像をBase64に変換する（ファビコン永続化用）
+    async convertImageToBase64(img) {
+        return new Promise((resolve, reject) => {
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // キャンバスサイズを16x16に設定（ファビコンサイズ）
+                canvas.width = 16;
+                canvas.height = 16;
+                
+                // 画像を描画
+                ctx.drawImage(img, 0, 0, 16, 16);
+                
+                // Base64データURLとして取得
+                const dataURL = canvas.toDataURL('image/png');
+                resolve(dataURL);
+            } catch (error) {
+                reject(error);
+            }
+        });
     }
 }
