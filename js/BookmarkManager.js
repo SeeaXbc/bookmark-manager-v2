@@ -44,10 +44,16 @@ class BookmarkManager {
         if (savedData) {
             this.data = JSON.parse(savedData);
             
-            // 全カラムに幅プロパティが設定されていることを確認
+            // 全カラムに必要なプロパティが設定されていることを確認
             this.data.columns.forEach(column => {
                 if (!column.width) {
                     column.width = '300px';
+                }
+                if (column.title === undefined) {
+                    column.title = '';
+                }
+                if (!column.color) {
+                    column.color = '#f8f9fa';
                 }
             });
         } else {
@@ -147,6 +153,11 @@ class BookmarkManager {
             this.saveItem();
         });
         
+        // Column Edit
+        document.getElementById('saveColumnBtn').addEventListener('click', () => {
+            this.saveColumn();
+        });
+        
         // Icon Picker
         document.getElementById('iconPickerBtn').addEventListener('click', (e) => {
             e.preventDefault();
@@ -188,6 +199,8 @@ class BookmarkManager {
         const columnId = Utils.generateUUID();
         const newColumn = {
             id: columnId,
+            title: '',
+            color: '#f8f9fa',
             width: '300px', // Set default width
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -665,8 +678,9 @@ class BookmarkManager {
         const contextMenu = document.getElementById('contextMenu');
         const contextMenuList = contextMenu.querySelector('.context-menu-list');
         
-        // カラム削除メニューアイテムを生成
+        // カラム編集・削除メニューアイテムを生成
         const menuItems = [
+            { icon: 'fas fa-edit', text: 'カラムを編集', action: 'edit-column' },
             { icon: 'fas fa-trash', text: 'カラムを削除', action: 'delete-column' }
         ];
         
@@ -685,7 +699,9 @@ class BookmarkManager {
                 const action = menuItem.dataset.action;
                 const targetColumnId = menuItem.dataset.columnId;
                 
-                if (action === 'delete-column') {
+                if (action === 'edit-column') {
+                    this.editColumn(targetColumnId);
+                } else if (action === 'delete-column') {
                     this.deleteColumn(targetColumnId);
                 }
                 
@@ -757,7 +773,8 @@ class BookmarkManager {
             }
             return `
             <div class="column" data-column-id="${column.id}" style="width: ${column.width}">
-                <div class="column-header" data-column-id="${column.id}">
+                <div class="column-header" data-column-id="${column.id}" style="background-color: ${column.color || '#f8f9fa'}">
+                    <span class="column-title">${column.title || ''}</span>
                 </div>
                 <div class="column-content" data-column-id="${column.id}">
                     ${this.renderItems(column.items)}
@@ -1197,5 +1214,65 @@ class BookmarkManager {
         }
         
         return null;
+    }
+    
+    // ===== カラム編集機能 =====
+    editColumn(columnId) {
+        const column = this.data.columns.find(col => col.id === columnId);
+        if (column) {
+            this.currentEditingColumn = columnId;
+            this.openColumnModal(column);
+        }
+    }
+    
+    openColumnModal(column) {
+        const form = document.getElementById('columnForm');
+        form.reset();
+        
+        // Set form values
+        document.getElementById('columnTitle').value = column.title || '';
+        document.getElementById('columnColor').value = column.color || '#f8f9fa';
+        
+        // Initialize color picker
+        this.initColumnColorPicker();
+        
+        MicroModal.show('columnModal');
+    }
+    
+    initColumnColorPicker() {
+        const colorInput = document.getElementById('columnColor');
+        const colorPickerContainer = document.getElementById('columnColorPicker');
+        
+        if (this.colorPicker) {
+            this.colorPicker.destroy();
+        }
+        
+        const currentColor = colorInput.value || '#f8f9fa';
+        colorInput.value = currentColor;
+        
+        this.colorPicker = new Picker({
+            parent: colorPickerContainer,
+            color: currentColor,
+            onChange: (color) => {
+                const hexColor = color.hex.length > 7 ? color.hex.substring(0, 7) : color.hex;
+                colorInput.value = hexColor;
+            }
+        });
+    }
+    
+    saveColumn() {
+        const form = document.getElementById('columnForm');
+        const formData = new FormData(form);
+        
+        const column = this.data.columns.find(col => col.id === this.currentEditingColumn);
+        if (column) {
+            column.title = formData.get('title') || '';
+            column.color = formData.get('color') || '#f8f9fa';
+            column.updatedAt = new Date().toISOString();
+            
+            this.saveData();
+            this.render();
+            MicroModal.close('columnModal');
+        }
     }
 }

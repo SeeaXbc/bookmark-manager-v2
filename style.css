@@ -177,11 +177,25 @@ body {
     padding: 3px 12px;
     border-bottom: 1px solid #e0e0e0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     background: #f8f9fa;
     border-radius: 8px 8px 0 0;
+    min-height: 18px;
+}
+
+.column-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
     min-height: 16px;
+    line-height: 16px;
+    display: block;
 }
 
 
