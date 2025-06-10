@@ -78,8 +78,14 @@ test.describe('削除確認ダイアログ', () => {
     // カラムが存在することを確認
     await expect(page.locator('.column')).toHaveCount(1);
 
-    // カラムヘッダーの削除ボタンをクリック
-    await page.locator('.column-header .column-action-btn[data-action="delete-column"]').click();
+    // カラムヘッダーを右クリックしてコンテキストメニューを表示
+    await page.locator('.column-header').click({ button: 'right' });
+    
+    // コンテキストメニューが表示されることを確認
+    await expect(page.locator('.context-menu')).toBeVisible();
+    
+    // コンテキストメニューから削除を選択
+    await page.locator('.context-menu-item[data-action="delete-column"]').click();
 
     // 削除確認ダイアログが表示されることを確認
     await expect(page.locator('#confirmDeleteModal')).toBeVisible();

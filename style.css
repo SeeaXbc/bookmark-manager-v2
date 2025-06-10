@@ -174,34 +174,16 @@ body {
 }
 
 .column-header {
-    padding: 6px 12px;
+    padding: 3px 12px;
     border-bottom: 1px solid #e0e0e0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #f8f9fa;
     border-radius: 8px 8px 0 0;
-    min-height: 32px;
+    min-height: 16px;
 }
 
-.column-drag-handle {
-    display: flex;
-    align-items: center;
-    cursor: grab;
-    color: #6c757d;
-    padding: 4px;
-    border-radius: 3px;
-    transition: all 0.2s;
-}
-
-.column-drag-handle:hover {
-    color: #495057;
-    background: #e9ecef;
-}
-
-.column-drag-handle:active {
-    cursor: grabbing;
-}
 
 .column-resize-handle {
     position: absolute;
@@ -219,25 +201,6 @@ body {
     opacity: 0.3;
 }
 
-.column-actions {
-    display: flex;
-    gap: 4px;
-}
-
-.column-action-btn {
-    background: none;
-    border: none;
-    color: #6c757d;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 3px;
-    font-size: 12px;
-}
-
-.column-action-btn:hover {
-    background: #e9ecef;
-    color: #495057;
-}
 
 .column-content {
     flex: 1;

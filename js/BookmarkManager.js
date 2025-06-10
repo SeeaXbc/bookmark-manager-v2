@@ -23,9 +23,9 @@ class BookmarkManager {
         this.iconService = new IconService();
         
         // イベントハンドラーの参照（クリーンアップ用）
-        this.columnActionHandler = null;
         this.folderToggleHandler = null;
         this.bookmarkClickHandler = null;
+        this.columnContextHandler = null;
         
         this.init();
     }
@@ -660,6 +660,57 @@ class BookmarkManager {
         }
     }
     
+    // カラム専用コンテキストメニューの表示
+    showColumnContextMenu(x, y, columnId) {
+        const contextMenu = document.getElementById('contextMenu');
+        const contextMenuList = contextMenu.querySelector('.context-menu-list');
+        
+        // カラム削除メニューアイテムを生成
+        const menuItems = [
+            { icon: 'fas fa-trash', text: 'カラムを削除', action: 'delete-column' }
+        ];
+        
+        // メニューをレンダリング
+        contextMenuList.innerHTML = menuItems.map(item => `
+            <li class="context-menu-item" data-action="${item.action}" data-column-id="${columnId}">
+                <i class="${item.icon}"></i>
+                ${item.text}
+            </li>
+        `).join('');
+        
+        // イベントリスナーを追加
+        const clickHandler = (e) => {
+            const menuItem = e.target.closest('.context-menu-item');
+            if (menuItem) {
+                const action = menuItem.dataset.action;
+                const targetColumnId = menuItem.dataset.columnId;
+                
+                if (action === 'delete-column') {
+                    this.deleteColumn(targetColumnId);
+                }
+                
+                this.hideContextMenu();
+                contextMenuList.removeEventListener('click', clickHandler);
+            }
+        };
+        
+        contextMenuList.addEventListener('click', clickHandler);
+        
+        // メニューの位置を設定して表示
+        contextMenu.style.left = x + 'px';
+        contextMenu.style.top = y + 'px';
+        contextMenu.style.display = 'block';
+        
+        // 画面外に出る場合は位置を調整
+        const rect = contextMenu.getBoundingClientRect();
+        if (rect.right > window.innerWidth) {
+            contextMenu.style.left = (x - rect.width) + 'px';
+        }
+        if (rect.bottom > window.innerHeight) {
+            contextMenu.style.top = (y - rect.height) + 'px';
+        }
+    }
+    
     // ===== 画面描画 =====
     render() {
         this.renderFavorites();
@@ -706,15 +757,7 @@ class BookmarkManager {
             }
             return `
             <div class="column" data-column-id="${column.id}" style="width: ${column.width}">
-                <div class="column-header">
-                    <div class="column-drag-handle">
-                        <i class="fas fa-grip-vertical"></i>
-                    </div>
-                    <div class="column-actions">
-                        <button class="column-action-btn" data-action="delete-column" data-column-id="${column.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
+                <div class="column-header" data-column-id="${column.id}">
                 </div>
                 <div class="column-content" data-column-id="${column.id}">
                     ${this.renderItems(column.items)}
@@ -724,26 +767,6 @@ class BookmarkManager {
             `;
         }).join('');
         
-        // Add event listeners for column actions using event delegation
-        const existingHandler = this.columnActionHandler;
-        if (existingHandler) {
-            document.removeEventListener('click', existingHandler);
-        }
-        
-        this.columnActionHandler = (e) => {
-            const btn = e.target.closest('.column-action-btn');
-            if (btn) {
-                e.stopPropagation();
-                const action = btn.dataset.action;
-                const columnId = btn.dataset.columnId;
-                
-                if (action === 'delete-column') {
-                    this.deleteColumn(columnId);
-                }
-            }
-        };
-        
-        document.addEventListener('click', this.columnActionHandler);
         
         // Add event listeners for folder toggles using event delegation
         const existingFolderHandler = this.folderToggleHandler;
@@ -777,6 +800,23 @@ class BookmarkManager {
         };
         
         document.addEventListener('click', this.bookmarkClickHandler);
+        
+        // Add event listeners for column header right-click
+        const existingColumnContextHandler = this.columnContextHandler;
+        if (existingColumnContextHandler) {
+            document.removeEventListener('contextmenu', existingColumnContextHandler);
+        }
+        
+        this.columnContextHandler = (e) => {
+            const header = e.target.closest('.column-header');
+            if (header) {
+                e.preventDefault();
+                const columnId = header.dataset.columnId;
+                this.showColumnContextMenu(e.clientX, e.clientY, columnId);
+            }
+        };
+        
+        document.addEventListener('contextmenu', this.columnContextHandler);
         
         // Add event listeners for column resize
         document.querySelectorAll('.column-resize-handle').forEach(handle => {
